@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const serviceAccount = JSON.parse(
-  await readFile(new URL("./serviceAccountKey.json", import.meta.url))
+  await readFile(new URL(process.env.FIREBASE_SERVICE_ACCOUNT, import.meta.url))
 );
 
 admin.initializeApp({
