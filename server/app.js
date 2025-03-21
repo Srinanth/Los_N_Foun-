@@ -5,7 +5,7 @@ import cors from "cors";
 
 dotenv.config();
 const app = express();
-app.use(cors({ origin: "https://los-n-foun.onrender.com", credentials: true }));
+app.use(cors({ origin: "https://los-n-found-p783.onrender.com", credentials: true }));
 app.use(express.json());
 
 // Routes
