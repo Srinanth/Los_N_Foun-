@@ -1,8 +1,5 @@
 {
-    "rewrites": [
-      {
-        "source": "/api/:path*",
-        "destination": "https://los-n-found.onrender.com/api/:path*"
-      }
-    ]
+   "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
