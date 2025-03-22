@@ -1,15 +1,87 @@
-import { useState } from "react";
-import { FaEye, FaEyeSlash, FaUserEdit } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default function UpdateProfile() {
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
-  const [profileImage, setProfileImage] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    bio: "",
+    profileImage: "",
+  });
+  const [imageFile, setImageFile] = useState(null);
+  const [loading, setLoading] = useState(false); // Add loading state
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setProfileImage(URL.createObjectURL(file));
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        setUserId(currentUser.uid);
+        fetchUserProfile(currentUser.uid);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const fetchUserProfile = async (id) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/profile/${id}`);
+      setFormData(response.data); // Set form data with fetched profile
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleImageChange = (e) => {
+    setImageFile(e.target.files[0]); // Set the selected image file
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true); // Start loading
+
+    let imageUrl = formData.profileImage; // Keep existing image if no new upload
+
+    // Upload new image to Cloudinary if a file is selected
+    if (imageFile) {
+      const formDataImage = new FormData();
+      formDataImage.append("file", imageFile);
+      formDataImage.append("05126aca-df9a-4327-83c0-c29a1a6dbc04", "profile"); // Replace with your Cloudinary upload preset
+
+      try {
+        const response = await axios.post(
+          "https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload", // Replace with your Cloudinary cloud name
+          formDataImage
+        );
+        imageUrl = response.data.secure_url; // Get uploaded image URL
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        alert("Image upload failed!");
+        setLoading(false); // Stop loading
+        return;
+      }
+    }
+
+    // Update profile data with the new image URL
+    try {
+      await axios.put(`http://localhost:5000/api/profile/${userId}`, {
+        ...formData,
+        profileImage: imageUrl,
+      });
+      alert("Profile updated successfully!");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Failed to update profile!");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -18,73 +90,72 @@ export default function UpdateProfile() {
       <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-3xl">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">Update Profile</h2>
 
-        {/* Profile Picture Upload */}
-        <div className="flex items-center space-x-4">
-          <label className="relative cursor-pointer">
-            <input type="file" className="hidden" onChange={handleImageChange} accept="image/*" />
-            {profileImage ? (
-              <img src={profileImage} alt="Profile" className="w-24 h-24 rounded-full object-cover border-2 border-gray-300" />
-            ) : (
-              <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
-                <FaUserEdit className="text-gray-500 text-3xl" />
-              </div>
-            )}
-          </label>
-          <p className="text-gray-600">Click to upload a profile picture</p>
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Name */}
+          <input
+            name="name"
+            type="text"
+            placeholder="Name"
+            className="w-full p-2 border rounded"
+            value={formData.name}
+            onChange={handleChange}
+          />
 
-        {/* Form Fields */}
-        <form className="mt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Email */}
-            <div>
-              <label className="block text-gray-600 text-sm">Email</label>
-              <input type="email" className="w-full px-4 py-2 border border-gray-300 rounded mt-1" placeholder="Enter your email" />
-            </div>
+          {/* Email */}
+          <input
+            name="email"
+            type="email"
+            placeholder="Email"
+            className="w-full p-2 border rounded"
+            value={formData.email}
+            onChange={handleChange}
+          />
 
-            {/* Phone Number */}
-            <div>
-              <label className="block text-gray-600 text-sm">Phone Number</label>
-              <input type="text" className="w-full px-4 py-2 border border-gray-300 rounded mt-1" placeholder="Enter your phone number" />
-            </div>
-          </div>
+          {/* Phone */}
+          <input
+            name="phone"
+            type="text"
+            placeholder="Phone"
+            className="w-full p-2 border rounded"
+            value={formData.phone}
+            onChange={handleChange}
+          />
 
           {/* Address */}
-          <div className="mt-4">
-            <label className="block text-gray-600 text-sm">Address</label>
-            <input type="text" className="w-full px-4 py-2 border border-gray-300 rounded mt-1" placeholder="Enter your address" />
+          <input
+            name="address"
+            type="text"
+            placeholder="Address"
+            className="w-full p-2 border rounded"
+            value={formData.address}
+            onChange={handleChange}
+          />
+
+
+          {/* Profile Image Upload */}
+          <div>
+            <input
+              type="file"
+              accept="image/*"
+              className="w-full p-2 border rounded"
+              onChange={handleImageChange}
+            />
+            {formData.profileImage && (
+              <img
+                src={formData.profileImage}
+                alt="Current Profile"
+                className="w-24 h-24 rounded-full mt-2"
+              />
+            )}
           </div>
 
-          {/* Bio */}
-          <div className="mt-4">
-            <label className="block text-gray-600 text-sm">Bio</label>
-            <textarea className="w-full px-4 py-2 border border-gray-300 rounded mt-1" rows="3" placeholder="Tell us about yourself"></textarea>
-          </div>
-
-          {/* Password Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            {/* New Password */}
-            <div className="relative">
-              <label className="block text-gray-600 text-sm">New Password</label>
-              <input type={passwordVisible ? "text" : "password"} className="w-full px-4 py-2 border border-gray-300 rounded mt-1" placeholder="Enter new password" />
-              <button type="button" className="absolute right-3 top-9 text-gray-500" onClick={() => setPasswordVisible(!passwordVisible)}>
-                {passwordVisible ? <FaEyeSlash /> : <FaEye />}
-              </button>
-            </div>
-
-            {/* Confirm Password */}
-            <div className="relative">
-              <label className="block text-gray-600 text-sm">Confirm Password</label>
-              <input type={confirmPasswordVisible ? "text" : "password"} className="w-full px-4 py-2 border border-gray-300 rounded mt-1" placeholder="Confirm new password" />
-              <button type="button" className="absolute right-3 top-9 text-gray-500" onClick={() => setConfirmPasswordVisible(!confirmPasswordVisible)}>
-                {confirmPasswordVisible ? <FaEyeSlash /> : <FaEye />}
-              </button>
-            </div>
-          </div>
-
-          {/* Save Profile Button */}
-          <button className="w-full bg-blue-500 text-white py-2 rounded mt-6 hover:bg-blue-600 transition">
-            Save Profile
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
+            disabled={loading} // Disable button while loading
+          >
+            {loading ? "Saving..." : "Save Profile"}
           </button>
         </form>
       </div>

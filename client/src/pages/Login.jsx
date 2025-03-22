@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
+import { auth, googleProvider } from "../firebaseConfig"; // Import Firebase auth
+import { signInWithEmailAndPassword, signInWithPopup, onAuthStateChanged } from "firebase/auth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -9,21 +11,40 @@ export default function LoginPage() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // Check if the user is already logged in on page load
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigate("/Home"); // Redirect to home if user is already logged in
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup subscription
+  }, [navigate]);
+
+  // 🔹 Function to log in with email & password
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(null);
 
     try {
-      const response = await fetch("https://los-n-found.onrender.com/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const token = await userCredential.user.getIdToken(); // Get Firebase token
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Login failed");
+      localStorage.setItem("token", token); // Store token
+      navigate("/Home"); // Redirect to dashboard
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
-      localStorage.setItem("token", data.token); // Store token
+  // 🔹 Function to log in with Google
+  const handleGoogleLogin = async () => {
+    try {
+      const userCredential = await signInWithPopup(auth, googleProvider);
+      const token = await userCredential.user.getIdToken(); // Get Firebase token
+
+      localStorage.setItem("token", token); // Store token
       navigate("/Home"); // Redirect to dashboard
     } catch (error) {
       setError(error.message);
@@ -38,7 +59,7 @@ export default function LoginPage() {
           <h2 className="text-xl font-semibold">Innovation distinguishes between a leader and a follower.</h2>
           <p className="mt-4">- Steve Jobs</p>
         </div>
-        
+
         {/* Right Side */}
         <div className="w-full md:w-1/2 p-10">
           <h3 className="text-2xl font-semibold text-gray-800 mb-6">Let's Get Started</h3>
@@ -49,12 +70,12 @@ export default function LoginPage() {
             {/* Email Field */}
             <div className="mb-4">
               <label className="block text-gray-600 text-sm">Email address</label>
-              <input 
-                type="email" 
+              <input
+                type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 mt-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                placeholder="Enter your email" 
+                className="w-full px-4 py-2 mt-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your email"
                 required
               />
             </div>
@@ -83,12 +104,15 @@ export default function LoginPage() {
               Sign In
             </button>
           </form>
-          
+
           <div className="text-center text-gray-500 my-4">or sign in with</div>
-          <button className="w-full flex items-center justify-center border border-gray-300 py-2 rounded hover:bg-gray-100 transition">
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full flex items-center justify-center border border-gray-300 py-2 rounded hover:bg-gray-100 transition"
+          >
             <FaGoogle className="text-red-500 mr-2" /> Login with Google
           </button>
-          
+
           <p className="text-center text-gray-600 mt-4">
             Don't have an account? <a href="/signup" className="text-blue-500 hover:underline">Sign up</a>
           </p>

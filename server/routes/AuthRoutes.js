@@ -3,31 +3,30 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { db } from "../config/firebaseConfig.js";
 import dotenv from "dotenv";
+import cors from "cors";
 import { verifyUser } from "../middleware/authmiddle.js";
-import cors from "cors"
 dotenv.config();
+
 const UserRouter = express.Router();
 UserRouter.use(cors());
+
 // Function to generate JWT token
 const generateToken = (email) => {
   return jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
 // **User Signup**
-UserRouter.post("/signup", async (req, res) => {
+UserRouter.post("/signup", verifyUser, async (req, res) => {
   try {
-    const { email, password, username } = req.body;
-    if (!email || !password || !username) return res.status(400).json({ error: "All fields are required" });
+    const { uid, username, email } = req.user; // Get user details from Firebase token
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await db.collection("users").doc(email).set({ username, email, password: hashedPassword });
+    // Save user details to your database (if needed)
+    const newUser = { uid, username, email }; // Store in Firebase Firestore or another DB
+    console.log("User signed up:", newUser);
 
-    // Generate token after successful signup
-    const token = generateToken(email);
-
-    return res.status(201).json({ message: "User registered successfully", token });
+    res.status(201).json({ message: "User registered successfully", user: newUser });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Signup failed", details: error.message });
   }
 });
 
@@ -48,18 +47,6 @@ UserRouter.post("/login", async (req, res) => {
     const token = generateToken(email);
 
     return res.status(200).json({ message: "Login successful", token });
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-});
-
-// **User Profile (Protected Route)**
-UserRouter.get("/profile", verifyUser, async (req, res) => {
-  try {
-    const userDoc = await db.collection("users").doc(req.user.email).get();
-    if (!userDoc.exists) return res.status(404).json({ error: "User not found" });
-
-    return res.json({ user: userDoc.data() });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
