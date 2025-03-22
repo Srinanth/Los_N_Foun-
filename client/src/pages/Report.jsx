@@ -62,7 +62,7 @@ export default function ReportPage() {
         const formData = new FormData();
         formData.append("image", imageFile);
 
-        const uploadResponse = await fetch("http://localhost:5000/api/cloudinary/upload", {
+        const uploadResponse = await fetch("https://los-n-found.onrender.com/api/cloudinary/upload", {
           method: "POST",
           body: formData,
         });
@@ -88,7 +88,7 @@ export default function ReportPage() {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/report", {
+      const response = await fetch("https://los-n-found.onrender.com/api/report", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

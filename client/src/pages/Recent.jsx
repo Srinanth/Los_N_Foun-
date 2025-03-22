@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
-import { auth } from "../firebaseConfig"; // Import Firebase auth & db
+import { auth } from "../firebaseConfig"; 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const RecentUpdates = () => {
   const [matches, setMatches] = useState([]);
-  const user = auth.currentUser; // Get logged-in user
+  const user = auth.currentUser; 
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!user) return;
 
     // Fetch match results
-    axios.get(`http://localhost:5000/api/matches/${user.uid}`)
+    axios.get(`https://los-n-found.onrender.com/api/matches/${user.uid}`)
       .then((response) => {
         if (response.data && Array.isArray(response.data)) {
           setMatches(response.data);

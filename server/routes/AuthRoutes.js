@@ -10,18 +10,14 @@ dotenv.config();
 const UserRouter = express.Router();
 UserRouter.use(cors());
 
-// Function to generate JWT token
 const generateToken = (email) => {
   return jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
-// **User Signup**
 UserRouter.post("/signup", verifyUser, async (req, res) => {
   try {
-    const { uid, username, email } = req.user; // Get user details from Firebase token
-
-    // Save user details to your database (if needed)
-    const newUser = { uid, username, email }; // Store in Firebase Firestore or another DB
+    const { uid, username, email } = req.user;
+    const newUser = { uid, username, email };
     console.log("User signed up:", newUser);
 
     res.status(201).json({ message: "User registered successfully", user: newUser });

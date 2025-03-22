@@ -34,7 +34,7 @@ const SignUp = () => {
       await updateProfile(user, { displayName: username });
 
       // 🔹 OPTIONAL: Send user details to backend
-      await fetch("http://localhost:5000/api/auth/signup", {
+      await fetch("https://los-n-found.onrender.com/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ uid: user.uid, username, email }),
@@ -55,7 +55,7 @@ const SignUp = () => {
       const user = userCredential.user;
 
       // 🔹 OPTIONAL: Send user details to backend
-      await fetch("http://localhost:5000/api/auth/signup", {
+      await fetch("https://los-n-found.onrender.com/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ uid: user.uid, username: user.displayName, email: user.email }),

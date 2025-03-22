@@ -1,9 +1,9 @@
 import express from "express";
-import { db, auth } from "../config/firebaseConfig.js"; // Import Firebase instances
+import { db, auth } from "../config/firebaseConfig.js";
 
 const FoundRouter = express.Router();
 
-// Endpoint to save found item reports to Firestore
+
 FoundRouter.post("/found", async (req, res) => {
   const { category, description, location, imageUrl } = req.body;
   const token = req.headers.authorization?.split(" ")[1];
@@ -18,7 +18,7 @@ FoundRouter.post("/found", async (req, res) => {
   }
 
   try {
-    // Verify the user's ID token
+    
     const user = await auth.verifyIdToken(token);
     const userId = user.uid;
 

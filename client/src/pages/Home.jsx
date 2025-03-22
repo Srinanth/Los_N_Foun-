@@ -1,9 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react"; // Icons for toggle
+import { Menu, X } from "lucide-react";
 import { getAuth } from "firebase/auth";
 import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
-import { app } from "../firebaseConfig"; // Firebase config
+import { app } from "../firebaseConfig"; 
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ export default function HomePage() {
   const [foundItems, setFoundItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [userId, setUserId] = useState(null); // Add userId state
+  const [userId, setUserId] = useState(null); 
 
   const auth = getAuth(app);
   const db = getFirestore(app);
@@ -26,11 +26,7 @@ export default function HomePage() {
           navigate("/login");
           return;
         }
-
-        // Set userId from Firebase Authentication
         setUserId(user.uid);
-
-        // Query lost items
         const lostQuery = query(collection(db, "reportedItems"), where("userId", "==", user.uid));
         const lostSnapshot = await getDocs(lostQuery);
         const lostData = lostSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
@@ -68,7 +64,7 @@ export default function HomePage() {
             { name: "Report Found", path: "/found" },
             { name: "Forum", path: "/forum" },
             { name: "Recent Posts", path: "/recent" },
-            { name: "Your Profile", path: `/profile/${userId}` }, // Use userId here
+            { name: "Your Profile", path: `/profile/${userId}` }, 
           ].map((item, index) => (
             <Link
               key={index}
@@ -101,7 +97,7 @@ export default function HomePage() {
             { name: "Report Found", path: "/found" },
             { name: "Forum", path: "/forum" },
             { name: "Recent Posts", path: "/recent" },
-            { name: "Your Profile", path: `/profile/${userId}` }, // Use userId here
+            { name: "Your Profile", path: `/profile/${userId}` }, 
           ].map((item, index) => (
             <Link key={index} to={item.path} onClick={() => setIsSidebarOpen(false)} className="text-lg text-white">
               {item.name}
