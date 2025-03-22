@@ -15,8 +15,8 @@ export default function ProfilePage() {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       console.log("Current User:", currentUser); 
       if (currentUser) {
-        setUserId(currentUser.uid); // Set the userId from Firebase Authentication
-        fetchUserProfile(currentUser.uid); // Fetch profile using the userId
+        setUserId(currentUser.uid);
+        fetchUserProfile(currentUser.uid); 
       } else {
         setError("User not authenticated. Please log in.");
         setLoading(false);
@@ -29,9 +29,9 @@ export default function ProfilePage() {
   const fetchUserProfile = async (id) => {
     try {
       console.log("Fetching profile for user ID:", id);
-      const response = await axios.get(`http://localhost:5000/api/profile/${id}`);
-      setUser(response.data); // Set the user profile data
-      setError(null); // Clear any previous errors
+      const response = await axios.get(`https://los-n-found.onrender.com/api/profile/${id}`);
+      setUser(response.data); 
+      setError(null); 
     } catch (error) {
       console.error("Error fetching profile:", error);
       setError("Failed to load profile. Please try again later.");

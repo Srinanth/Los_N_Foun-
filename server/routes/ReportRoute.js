@@ -1,9 +1,9 @@
 import express from "express";
-import { db, auth } from "../config/firebaseConfig.js"; // Import the initialized Firebase instances
+import { db, auth } from "../config/firebaseConfig.js"; 
 
 const Reportrouter = express.Router();
 
-// Endpoint to save report data to Firestore
+
 Reportrouter.post("/report", async (req, res) => {
   const { category, description, location, imageUrl } = req.body;
   const token = req.headers.authorization?.split(" ")[1];

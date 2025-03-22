@@ -4,12 +4,11 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaf
 export default function MapComponent({ setLocation }) {
   const [position, setPosition] = useState(null);
 
-  // Function to handle user's click on the map
   function LocationMarker() {
     useMapEvents({
       click(e) {
         setPosition(e.latlng);
-        setLocation(e.latlng); // Send selected location to parent component
+        setLocation(e.latlng); 
       },
     });
 
@@ -20,7 +19,6 @@ export default function MapComponent({ setLocation }) {
     ) : null;
   }
 
-  // Get user's current location on first load
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -33,7 +31,7 @@ export default function MapComponent({ setLocation }) {
 
   return (
     <MapContainer
-      center={position || [20, 77]} // Default to India if no location found
+      center={position || [20, 77]}
       zoom={position ? 13 : 5}
       style={{ height: "300px", width: "100%" }}
       className="border border-gray-300 rounded"

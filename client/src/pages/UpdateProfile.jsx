@@ -29,7 +29,7 @@ export default function UpdateProfile() {
 
   const fetchUserProfile = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/profile/${id}`);
+      const response = await axios.get(`https://los-n-found.onrender.com/api/profile/${id}`);
       setFormData(response.data); // Set form data with fetched profile
     } catch (error) {
       console.error("Error fetching profile:", error);
@@ -72,7 +72,7 @@ export default function UpdateProfile() {
 
     // Update profile data with the new image URL
     try {
-      await axios.put(`http://localhost:5000/api/profile/${userId}`, {
+      await axios.put(`https://los-n-found.onrender.com/api/profile/${userId}`, {
         ...formData,
         profileImage: imageUrl,
       });

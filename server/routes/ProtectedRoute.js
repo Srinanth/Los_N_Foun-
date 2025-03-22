@@ -5,7 +5,6 @@ import { db } from "../config/firebaseConfig.js";
 const ProtectedRouter = express.Router();
 
 
-// **User Profile (Protected Route)**
 ProtectedRouter.get("/profile", verifyUser, async (req, res) => {
   try {
     const userDoc = await db.collection("users").doc(req.user.email).get();
