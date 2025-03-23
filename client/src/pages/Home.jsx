@@ -64,6 +64,7 @@ export default function HomePage() {
             { name: "Report Found", path: "/found" },
             { name: "Forum", path: "/forum" },
             { name: "Recent Posts", path: "/recent" },
+            { name: "Map", path: "/map" },
             { name: "Your Profile", path: `/profile/${userId}` }, 
           ].map((item, index) => (
             <Link
@@ -97,6 +98,7 @@ export default function HomePage() {
             { name: "Report Found", path: "/found" },
             { name: "Forum", path: "/forum" },
             { name: "Recent Posts", path: "/recent" },
+            { name: "Map", path: "/map" },
             { name: "Your Profile", path: `/profile/${userId}` }, 
           ].map((item, index) => (
             <Link key={index} to={item.path} onClick={() => setIsSidebarOpen(false)} className="text-lg text-white">
