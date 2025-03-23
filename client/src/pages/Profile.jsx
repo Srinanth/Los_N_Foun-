@@ -3,12 +3,15 @@ import { FaUserEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const auth = getAuth();
@@ -95,6 +98,12 @@ export default function ProfilePage() {
           </button>
         </Link>
       </div>
+      <button
+        onClick={() => navigate("/Home")}
+        className="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-700 transition"
+      >
+        Go Back to Home
+      </button>
     </div>
   );
 }

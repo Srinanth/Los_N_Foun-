@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function UpdateProfile() {
   const [userId, setUserId] = useState(null);
@@ -13,7 +14,9 @@ export default function UpdateProfile() {
     profileImage: "",
   });
   const [imageFile, setImageFile] = useState(null);
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const auth = getAuth();
@@ -58,7 +61,7 @@ export default function UpdateProfile() {
 
       try {
         const response = await axios.post(
-          "https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload", // Replace with your Cloudinary cloud name
+          "https://api.cloudinary.com/v1_1/dhaykn4ec/image/upload", // Replace with your Cloudinary cloud name
           formDataImage
         );
         imageUrl = response.data.secure_url; // Get uploaded image URL
@@ -159,6 +162,12 @@ export default function UpdateProfile() {
           </button>
         </form>
       </div>
+      <button
+        onClick={() => navigate("/Home")}
+        className="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-700 transition"
+      >
+        Go Back to Home
+      </button>
     </div>
   );
 }

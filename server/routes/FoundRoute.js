@@ -31,7 +31,7 @@ FoundRouter.post("/found", async (req, res) => {
         lat: location.lat,
         lng: location.lng,
       },
-      imageUrl: imageUrl || null, // Optional field
+      imageUrl: imageUrl || null, 
       createdAt: new Date().toISOString(),
     };
 

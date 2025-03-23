@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
-import { auth, googleProvider } from "../firebaseConfig"; // Import Firebase auth
+import { auth, googleProvider } from "../firebaseConfig"; 
 import { signInWithEmailAndPassword, signInWithPopup, onAuthStateChanged } from "firebase/auth";
 
 export default function LoginPage() {
@@ -11,15 +11,14 @@ export default function LoginPage() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Check if the user is already logged in on page load
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        navigate("/Home"); // Redirect to home if user is already logged in
+        navigate("/Home");
       }
     });
 
-    return () => unsubscribe(); // Cleanup subscription
+    return () => unsubscribe();
   }, [navigate]);
 
   // 🔹 Function to log in with email & password
@@ -31,8 +30,8 @@ export default function LoginPage() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const token = await userCredential.user.getIdToken(); // Get Firebase token
 
-      localStorage.setItem("token", token); // Store token
-      navigate("/Home"); // Redirect to dashboard
+      localStorage.setItem("token", token); 
+      navigate("/Home"); 
     } catch (error) {
       setError(error.message);
     }
@@ -42,10 +41,10 @@ export default function LoginPage() {
   const handleGoogleLogin = async () => {
     try {
       const userCredential = await signInWithPopup(auth, googleProvider);
-      const token = await userCredential.user.getIdToken(); // Get Firebase token
+      const token = await userCredential.user.getIdToken(); 
 
-      localStorage.setItem("token", token); // Store token
-      navigate("/Home"); // Redirect to dashboard
+      localStorage.setItem("token", token);
+      navigate("/Home"); 
     } catch (error) {
       setError(error.message);
     }

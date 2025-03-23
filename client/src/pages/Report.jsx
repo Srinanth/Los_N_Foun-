@@ -4,6 +4,22 @@ import { useNavigate } from "react-router-dom";
 import { app } from "../firebaseConfig"; // Firebase config
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import icon from "leaflet/dist/images/marker-icon.png";
+import iconShadow from "leaflet/dist/images/marker-shadow.png";
+
+
+const DefaultIcon = L.icon({
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+  iconSize: [25, 41], 
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41], 
+});
+
+// Set the default icon for all markers
+L.Marker.prototype.options.icon = DefaultIcon;
 
 export default function ReportPage() {
   const [category, setCategory] = useState("");
@@ -34,7 +50,9 @@ export default function ReportPage() {
         setLocation({ lat: e.latlng.lat, lng: e.latlng.lng });
       },
     });
-    return location.lat && location.lng ? <Marker position={[location.lat, location.lng]} /> : null;
+    return location.lat && location.lng ? (
+      <Marker position={[location.lat, location.lng]} icon={DefaultIcon} />
+    ) : null;
   }
 
   const handleSubmit = async (e) => {

@@ -9,6 +9,8 @@ import HomePage from "./pages/Home";
 import ReportPage from "./pages/Report";
 import FoundPage from "./pages/Found";
 import RecentUpdates from "./pages/Recent";
+import MapComponent from "./pages/Nearby";
+import ForumPage from "./pages/Forum";
 
 
 function App() {
@@ -25,7 +27,9 @@ function App() {
         <Route path="/update" element={<UpdateProfile />} />
         <Route path="/report" element={<ReportPage />} />
         <Route path="/found" element={<FoundPage />} />
+        <Route path="/forum" element={<ForumPage />} />
         <Route path="/recent" element={<RecentUpdates />} />
+        <Route path="/map" element={<MapComponent />} />
       </Routes>
      
     </Router>
