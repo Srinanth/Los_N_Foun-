@@ -1,12 +1,79 @@
-# React + Vite
+# Setting Up a React + Vite Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This guide provides the necessary steps to set up and run a React project using Vite.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## **1️⃣ Install Node.js and npm**
+Ensure **Node.js** is installed, as it includes `npm` (Node Package Manager).
 
-## Expanding the ESLint configuration
+### **🔹 Windows/macOS/Linux:**
+- Download **Node.js LTS** from: [https://nodejs.org/](https://nodejs.org/)
+- Verify installation by running:  
+  ```sh
+  node -v   # Check Node.js version
+  npm -v    # Check npm version
+  ```
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## **2️⃣ Clone the Repository**
+Clone the repository to get the project files locally.
+
+```sh
+git clone https://github.com/your-username/your-repo.git
+```
+
+Replace `your-username` and `your-repo` with the actual values.
+
+---
+
+## **3️⃣ Navigate to the Frontend Directory**
+If the React frontend is in a subfolder (`frontend`), move into it:
+
+```sh
+cd frontend
+```
+
+---
+
+## **4️⃣ Install Dependencies**
+Run the following command to install all required dependencies:
+
+```sh
+npm install
+```
+
+This will install all packages listed in `package.json`.
+
+---
+
+## **5️⃣ Run the Development Server**
+To start the project in development mode with **Vite**, use:
+
+```sh
+npm run dev
+```
+
+This will launch the project on a local server. The terminal will display a local development URL (e.g., `http://localhost:5173/`).
+
+---
+
+## **6️⃣ Expanding the ESLint Configuration**
+If you are developing a production application, it is recommended to use TypeScript and enable type-aware lint rules. 
+
+Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) into your project.
+
+---
+
+## **7️⃣ Stopping the Development Server**
+To stop the server, press:
+
+```
+CTRL + C
+```
+
+---
+
+Now the project is ready for development! 🚀
+
