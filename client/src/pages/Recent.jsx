@@ -12,7 +12,7 @@ const RecentUpdates = () => {
     if (!user) return;
 
     // Fetch match results
-    axios.get(`https://los-n-found.onrender.com/api/matches/${user.uid}`)
+    axios.get(`http://localhost:5000/api/matches/${user.uid}`)
       .then((response) => {
         if (response.data && Array.isArray(response.data)) {
           setMatches(response.data);

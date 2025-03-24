@@ -61,7 +61,7 @@ const MapComponent = () => {
 
     setLoading(true);
     try {
-      const response = await axios.get("https://los-n-found.onrender.com/api/items", {
+      const response = await axios.get("http://localhost:5000/api/items", {
         params: {
           latitude: selectedLocation[0],
           longitude: selectedLocation[1],
@@ -84,7 +84,7 @@ const MapComponent = () => {
 
   const handleSendEmail = async (ownerUid, itemDetails, title) => {
     try {
-      const response = await axios.post("https://los-n-found.onrender.com/api/send-email", {
+      const response = await axios.post("http://localhost:5000/api/send-email", {
         ownerUid,
         senderEmail: auth.currentUser.email,
         itemDetails,
