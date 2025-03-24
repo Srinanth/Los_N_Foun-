@@ -10,7 +10,7 @@ const ForumPage = () => {
     { id: 3, title: "Lost my phone, what should I do?", author: "Cinol", replies: 7 },
     { id: 4, title: "Anyone found a black wallet near downtown?", author: "Xavier", replies: 2 },
   ];
-
+     
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4">
       {/* Header */}
