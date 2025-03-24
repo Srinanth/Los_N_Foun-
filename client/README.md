@@ -32,7 +32,7 @@ Replace `your-username` and `your-repo` with the actual values.
 If the React frontend is in a subfolder (`frontend`), move into it:
 
 ```sh
-cd frontend
+cd client
 ```
 
 ---
@@ -56,13 +56,6 @@ npm run dev
 ```
 
 This will launch the project on a local server. The terminal will display a local development URL (e.g., `http://localhost:5173/`).
-
----
-
-## **6️⃣ Expanding the ESLint Configuration**
-If you are developing a production application, it is recommended to use TypeScript and enable type-aware lint rules. 
-
-Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) into your project.
 
 ---
 
