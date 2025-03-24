@@ -76,7 +76,7 @@ export default function FoundPage() {
         const formData = new FormData();
         formData.append("image", imageFile);
 
-        const uploadResponse = await fetch("https://los-n-found.onrender.com/api/cloudinary/upload", {
+        const uploadResponse = await fetch("http://localhost:5000/api/cloudinary/upload", {
           method: "POST",
           body: formData,
         });
@@ -102,7 +102,7 @@ export default function FoundPage() {
     };
 
     try {
-      const response = await fetch("https://los-n-found.onrender.com/api/found", {
+      const response = await fetch("http://localhost:5000/api/found", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

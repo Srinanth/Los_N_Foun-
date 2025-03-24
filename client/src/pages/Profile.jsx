@@ -32,7 +32,7 @@ export default function ProfilePage() {
   const fetchUserProfile = async (id) => {
     try {
       console.log("Fetching profile for user ID:", id);
-      const response = await axios.get(`https://los-n-found.onrender.com/api/profile/${id}`);
+      const response = await axios.get(`http://localhost:5000/api/profile/${id}`);
       setUser(response.data); 
       setError(null); 
     } catch (error) {
