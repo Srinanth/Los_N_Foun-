@@ -13,7 +13,6 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // 🔹 Handle Email/Password Sign-up
   const handleSignUp = async (e) => {
     e.preventDefault();
     setError(null);
@@ -26,15 +25,11 @@ const SignUp = () => {
     setLoading(true);
 
     try {
-      // 🔹 Create user in Firebase
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
-      // 🔹 Update username in Firebase
       await updateProfile(user, { displayName: username });
 
-      // 🔹 OPTIONAL: Send user details to backend
-      await fetch("http://localhost:5000/api/auth/signup", {
+      await fetch("https://los-n-found.onrender.com/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ uid: user.uid, username, email }),
@@ -47,15 +42,13 @@ const SignUp = () => {
     setLoading(false);
   };
 
-  // 🔹 Handle Google Sign-In
   const handleGoogleSignIn = async () => {
     setError(null);
     try {
       const userCredential = await signInWithPopup(auth, googleProvider);
       const user = userCredential.user;
 
-      // 🔹 OPTIONAL: Send user details to backend
-      await fetch("http://localhost:5000/api/auth/signup", {
+      await fetch("https://los-n-found.onrender.com/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ uid: user.uid, username: user.displayName, email: user.email }),
@@ -68,29 +61,96 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gradient-to-r from-purple-600 to-blue-500">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-        <h2 className="text-2xl font-semibold text-center text-gray-700">Sign Up</h2>
-        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-        
-        <form className="mt-4" onSubmit={handleSignUp}>
-          <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full px-4 py-2 border rounded-md mb-3" required />
-          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-2 border rounded-md mb-3" required />
-          
-          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-2 border rounded-md mb-3" required />
-          <input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full px-4 py-2 border rounded-md mb-3" required />
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
+      <div className="flex w-full max-w-3xl bg-white shadow-lg rounded-lg overflow-hidden flex-col md:flex-row">
+        <div className="hidden md:flex w-1/2 bg-gradient-to-r from-blue-500 to-blue-600 text-white flex-col justify-center items-center p-6 text-center">
+          <h2 className="text-xl font-semibold">"Join our community of helpful students"</h2>
+          <p className="mt-4">ReturnIt makes campus life easier for everyone</p>
+        </div>
 
-          <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-md mt-3 hover:bg-blue-600" disabled={loading}>
-            {loading ? "Signing Up..." : "Sign Up"}
+        <div className="w-full md:w-1/2 p-8">
+          <h3 className="text-2xl font-semibold text-blue-600 mb-6">Create Your Account</h3>
+
+          {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
+
+          <form onSubmit={handleSignUp} className="space-y-4">
+            <div>
+              <label className="block text-gray-600 text-sm mb-1">Username</label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Choose a username"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-600 text-sm mb-1">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-600 text-sm mb-1">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Create a password"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-600 text-sm mb-1">Confirm Password</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Confirm your password"
+                required
+              />
+            </div>
+
+            <button 
+              type="submit" 
+              className="w-full bg-blue-600 text-white py-2 rounded-lg mt-2 hover:bg-blue-700 transition font-medium"
+              disabled={loading}
+            >
+              {loading ? "Creating Account..." : "Sign Up"}
+            </button>
+          </form>
+
+          <div className="flex items-center my-4">
+            <div className="flex-grow border-t border-gray-300"></div>
+            <span className="mx-4 text-gray-500">or</span>
+            <div className="flex-grow border-t border-gray-300"></div>
+          </div>
+
+          <button
+            onClick={handleGoogleSignIn}
+            className="w-full flex items-center justify-center border border-gray-300 py-2 rounded-lg hover:bg-gray-50 transition font-medium"
+          >
+            <FaGoogle className="text-red-500 mr-2" /> Continue with Google
           </button>
-        </form>
 
-        <div className="text-center text-gray-500 my-3">or</div>
-
-        {/* Google Auth Button */}
-        <button onClick={handleGoogleSignIn} className="w-full flex justify-center items-center bg-red-500 text-white py-2 rounded-md hover:bg-red-600">
-          <FaGoogle className="mr-2" /> Sign up with Google
-        </button>
+          <p className="text-center text-gray-600 mt-6">
+            Already have an account?{' '}
+            <a href="/login" className="text-blue-600 hover:underline font-medium">
+              Log in
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -8,6 +8,8 @@ import L from "leaflet";
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 import { useNavigate } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
+import { FaArrowLeft, FaSearch, FaEnvelope } from "react-icons/fa";
 
 const DefaultIcon = L.icon({
   iconUrl: icon,
@@ -26,6 +28,7 @@ const MapComponent = () => {
   const [reports, setReports] = useState([]);
   const [senderEmail, setSenderEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const auth = getAuth(app);
@@ -47,11 +50,13 @@ const MapComponent = () => {
         },
         (err) => {
           console.error("Error fetching location:", err);
+          setUserLocation([51.505, -0.09]);
+          setPosition([51.505, -0.09]);
         },
         { enableHighAccuracy: true }
       );
     }
-  }, []);
+  }, [auth]);
 
   const fetchItems = async () => {
     if (!selectedLocation) {
@@ -61,7 +66,7 @@ const MapComponent = () => {
 
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:5000/api/items", {
+      const response = await axios.get("https://los-n-found.onrender.com/api/items", {
         params: {
           latitude: selectedLocation[0],
           longitude: selectedLocation[1],
@@ -83,8 +88,9 @@ const MapComponent = () => {
   };
 
   const handleSendEmail = async (ownerUid, itemDetails, title) => {
+    setEmailLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/api/send-email", {
+      const response = await axios.post("https://los-n-found.onrender.com/api/send-email", {
         ownerUid,
         senderEmail: auth.currentUser.email,
         itemDetails,
@@ -94,6 +100,8 @@ const MapComponent = () => {
     } catch (error) {
       console.error("Error sending email:", error);
       alert("Failed to send email");
+    } finally {
+      setEmailLoading(false);
     }
   };
 
@@ -112,10 +120,30 @@ const MapComponent = () => {
   };
 
   return (
-    <div className="h-screen w-full flex flex-col">
-      <div className="flex-grow relative">
-        {position && (
-          <MapContainer center={position} zoom={13} className="h-full w-full">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
+      {/* Header */}
+      <div className="bg-white shadow-sm p-4 flex justify-between items-center">
+        <h1 className="text-xl font-bold text-gray-800 flex items-center">
+          <FaSearch className="mr-2 text-blue-600" />
+          Map Search
+        </h1>
+        <button
+          onClick={() => navigate("/Home")}
+          className="text-blue-600 hover:text-blue-800 font-medium flex items-center"
+        >
+          <FaArrowLeft className="mr-1" />
+          Back
+        </button>
+      </div>
+
+      <div className="flex-grow relative" style={{ height: "60vh" }}>
+        {position ? (
+          <MapContainer 
+            center={position} 
+            zoom={13} 
+            className="h-full w-full"
+            style={{ zIndex: 0 }}
+          >
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; OpenStreetMap contributors'
@@ -126,58 +154,84 @@ const MapComponent = () => {
               </Marker>
             )}
             <LocationMarker />
-            {reports.length > 0 ? (
-              reports.map((report, index) => (
-                <Marker
-                  key={index}
-                  position={[report.location.lat, report.location.lng]}
-                  icon={DefaultIcon}
-                >
-                  <Popup>
-                    <div>
-                      <h3 className="font-bold">{report.description}</h3>
-                      <p>Type: {report.type}</p>
-                      {report.userId && (
-                        <button
-                          onClick={() => handleSendEmail(report.userId, report.description, report.type)}
-                          className="bg-blue-500 text-white px-4 py-2 rounded-lg mt-2"
-                        >
-                          Email Owner
-                        </button>
-                      )}
-                    </div>
-                  </Popup>
-                </Marker>
-              ))
-            ) : (
-              <p className="absolute top-2 left-2 bg-white p-2 text-gray-700 shadow-md">
-                No items found in this area
-              </p>
-            )}
+            {reports.map((report, index) => (
+              <Marker
+                key={index}
+                position={[report.location.lat, report.location.lng]}
+                icon={DefaultIcon}
+              >
+                <Popup className="custom-popup">
+                  <div className="p-2">
+                    <h3 className="font-bold text-gray-800">{report.description}</h3>
+                    <p className="text-gray-600">Type: {report.type}</p>
+                    {report.userId && (
+                      <button
+                        onClick={() => handleSendEmail(report.userId, report.description, report.type)}
+                        className="mt-2 w-full bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition flex items-center justify-center"
+                        disabled={emailLoading}
+                      >
+                        {emailLoading ? (
+                          <>
+                            <CircularProgress size={16} color="white" className="text-white mr-2" />
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            <FaEnvelope className="mr-1" />
+                            Contact Owner
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </div>
+                </Popup>
+              </Marker>
+            ))}
           </MapContainer>
+        ) : (
+          <div className="h-full flex items-center justify-center">
+            <CircularProgress className="text-blue-600" />
+          </div>
         )}
       </div>
 
-      <div className="p-4 bg-white shadow-md flex flex-col items-center">
+      <div className="bg-white p-4 shadow-lg border-t border-gray-200">
         {selectedLocation && (
-          <p className="mb-2 text-gray-700">
-            Selected Location: {selectedLocation[0].toFixed(5)}, {selectedLocation[1].toFixed(5)}
+          <p className="text-sm text-gray-600 mb-2">
+            Selected: {selectedLocation[0].toFixed(5)}, {selectedLocation[1].toFixed(5)}
           </p>
         )}
-        <button
-          onClick={fetchItems}
-          className="bg-blue-500 text-white px-6 py-2 rounded-lg"
-          disabled={loading}
-        >
-          {loading ? "Searching..." : "Search Locality"}
-        </button>
+        
+        <div className="flex space-x-2">
+          <button
+            onClick={fetchItems}
+            className="flex-grow bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition font-medium flex items-center justify-center"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <CircularProgress size={20}  color="white" className="text-white mr-2" />
+                Searching...
+              </>
+            ) : (
+              <>
+                <FaSearch className="mr-2" />
+                Search This Area
+              </>
+            )}
+          </button>
+        </div>
+
+        {error && (
+          <p className="mt-2 text-red-500 text-sm text-center">{error}</p>
+        )}
+
+        {reports.length === 0 && !loading && (
+          <p className="mt-2 text-gray-500 text-sm text-center">
+            {selectedLocation ? "No items found in this area" : "Select a location on the map"}
+          </p>
+        )}
       </div>
-      <button
-        onClick={() => navigate("/Home")}
-        className="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-700 transition"
-      >
-        Go Back to Home
-      </button>
     </div>
   );
 };

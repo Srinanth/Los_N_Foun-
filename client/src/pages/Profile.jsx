@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -16,7 +17,6 @@ export default function ProfilePage() {
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      console.log("Current User:", currentUser); 
       if (currentUser) {
         setUserId(currentUser.uid);
         fetchUserProfile(currentUser.uid); 
@@ -31,79 +31,107 @@ export default function ProfilePage() {
 
   const fetchUserProfile = async (id) => {
     try {
-      console.log("Fetching profile for user ID:", id);
-      const response = await axios.get(`http://localhost:5000/api/profile/${id}`);
+      const response = await axios.get(`https://los-n-found.onrender.com/api/profile/${id}`);
       setUser(response.data); 
       setError(null); 
     } catch (error) {
       console.error("Error fetching profile:", error);
       setError("Failed to load profile. Please try again later.");
     } finally {
-      setLoading(false); // Stop loading regardless of success or failure
+      setLoading(false);
     }
   };
 
   if (loading) {
-    return <p className="text-center mt-8">Loading...</p>;
+    return <div className="flex justify-center items-center min-h-screen bg-blue-50">
+      <p className="text-blue-600">Loading...</p>
+    </div>;
   }
 
   if (error) {
-    return <p className="text-center mt-8 text-red-500">{error}</p>;
+    return <div className="flex justify-center items-center min-h-screen bg-blue-50">
+      <p className="text-red-500">{error}</p>
+    </div>;
   }
 
   if (!user) {
-    return <p className="text-center mt-8">No profile data found.</p>;
+    return <div className="flex justify-center items-center min-h-screen bg-blue-50">
+      <p className="text-blue-600">No profile data found.</p>
+    </div>;
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-3xl">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Profile</h2>
-
-        <div className="flex items-center space-x-4">
-          <img
-            src={user.profileImage || "https://via.placeholder.com/150"}
-            alt="Profile"
-            className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"
-          />
-          <div>
-            <h3 className="text-xl font-semibold text-gray-800">{user.name || "No name"}</h3>
-            <p className="text-gray-600">{user.bio || "No bio available"}</p>
-          </div>
-        </div>
-
-        <div className="mt-6 space-y-4">
-          <div>
-            <h4 className="text-gray-700 font-medium">Email</h4>
-            <p className="text-gray-600">{user.email || "Not provided"}</p>
-          </div>
-          <div>
-            <h4 className="text-gray-700 font-medium">Phone</h4>
-            <p className="text-gray-600">{user.phone || "Not provided"}</p>
-          </div>
-          <div>
-            <h4 className="text-gray-700 font-medium">Reports Made</h4>
-            <p className="text-gray-600">{user.reportsCount || 0} items reported</p>
-          </div>
-          <div>
-            <h4 className="text-gray-700 font-medium">Items Found</h4>
-            <p className="text-gray-600">{user.foundCount || 0} items found</p>
-          </div>
-        </div>
-
-        <Link to="/update">
-          <button className="w-full bg-blue-500 text-white py-2 rounded mt-6 hover:bg-blue-600 transition flex items-center justify-center space-x-2">
-            <FaUserEdit />
-            <span>Edit Profile</span>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-6">
+      <div className="max-w-4xl mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-2xl font-bold text-blue-600">ReturnIt</h1>
+          <button
+            onClick={() => navigate("/Home")}
+            className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+          >
+            Go Back to Home
           </button>
-        </Link>
+        </div>
+
+        <div className="bg-white shadow-lg rounded-xl overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-32"></div>
+          
+          <div className="px-6 pb-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center -mt-16">
+              <div className="bg-white p-1 rounded-full shadow-md">
+                {user.profileImage ? (
+                  <img
+                    src={user.profileImage}
+                    alt="Profile"
+                    className="w-24 h-24 rounded-full object-cover"
+                  />
+                ) : (
+                  <AccountCircleIcon style={{ fontSize: 96 }} className="text-blue-500" />
+                )}
+              </div>
+              
+              <div className="mt-4 sm:mt-0 sm:ml-6">
+                <h2 className="text-2xl font-bold text-gray-800">{user.name || "No name"}</h2>
+                <div className="flex items-center mt-2">
+                  <span className="bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full">
+                    {user.email || "Not provided"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h3 className="text-sm font-medium text-blue-600 uppercase tracking-wider">Phone</h3>
+                <p className="mt-1 text-lg font-semibold text-gray-800">
+                  {user.phone || "Not provided"}
+                </p>
+              </div>
+              
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h3 className="text-sm font-medium text-blue-600 uppercase tracking-wider">Reports Made</h3>
+                <p className="mt-1 text-lg font-semibold text-gray-800">
+                  {user.reportsCount || 0} items reported
+                </p>
+              </div>
+              
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h3 className="text-sm font-medium text-blue-600 uppercase tracking-wider">Items Found</h3>
+                <p className="mt-1 text-lg font-semibold text-gray-800">
+                  {user.foundCount || 0} items found
+                </p>
+              </div>
+            </div>
+
+            <Link to="/update" className="block mt-8">
+              <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition flex items-center justify-center space-x-2">
+                <FaUserEdit />
+                <span>Edit Profile</span>
+              </button>
+            </Link>
+          </div>
+        </div>
       </div>
-      <button
-        onClick={() => navigate("/Home")}
-        className="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-700 transition"
-      >
-        Go Back to Home
-      </button>
     </div>
   );
 }
