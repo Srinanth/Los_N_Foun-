@@ -7,6 +7,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
+import LinearProgress from '@mui/material/LinearProgress';
 
 const DefaultIcon = L.icon({
   iconUrl: icon,
@@ -48,7 +49,9 @@ export default function FoundPage() {
         setLocation({ lat: e.latlng.lat, lng: e.latlng.lng });
       },
     });
-    return location.lat && location.lng ? <Marker position={[location.lat, location.lng]} icon={DefaultIcon} /> : null;
+    return location.lat && location.lng ? (
+      <Marker position={[location.lat, location.lng]} icon={DefaultIcon} />
+    ) : null;
   }
 
   const handleSubmit = async (e) => {
@@ -76,7 +79,7 @@ export default function FoundPage() {
         const formData = new FormData();
         formData.append("image", imageFile);
 
-        const uploadResponse = await fetch("http://localhost:5000/api/cloudinary/upload", {
+        const uploadResponse = await fetch("https://los-n-found.onrender.com/api/cloudinary/upload", {
           method: "POST",
           body: formData,
         });
@@ -102,7 +105,7 @@ export default function FoundPage() {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/found", {
+      const response = await fetch("https://los-n-found.onrender.com/api/found", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -129,67 +132,108 @@ export default function FoundPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-green-700 to-blue-600 p-4">
-      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">Report a Found Item</h2>
-        {error && <p className="text-red-500 text-center">{error}</p>}
-        {success && <p className="text-green-500 text-center">Item reported successfully!</p>}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-gray-600 text-sm mb-1">Category</label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500"
-              required
-            >
-              <option value="">Select a category</option>
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-gray-600 text-sm mb-1">Description</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500"
-              placeholder="Describe the found item"
-              rows="3"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-gray-600 text-sm mb-1">Select Location on Map</label>
-            {location.lat && location.lng ? (
-              <MapContainer center={[location.lat, location.lng]} zoom={13} style={{ height: "250px", width: "100%" }}>
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                <LocationMarker />
-              </MapContainer>
-            ) : (
-              <p>Loading map...</p>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+          <div className="p-6 md:p-8">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">Report a Found Item</h2>
+              <button
+                onClick={() => navigate("/Home")}
+                className="text-blue-600 hover:text-blue-800 font-medium"
+              >
+                ← Back to Home
+              </button>
+            </div>
+
+            {loading && <LinearProgress color="primary" className="mb-4" />}
+            {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
+            {success && (
+              <div className="bg-green-100 text-green-800 p-4 rounded-lg mb-4 text-center">
+                Found item reported successfully!
+              </div>
             )}
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label className="block text-gray-700 text-sm font-medium mb-2">Category</label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                >
+                  <option value="">Select a category</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-gray-700 text-sm font-medium mb-2">Description</label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Describe the found item (color, brand, identifying marks, etc.)"
+                  rows="4"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700 text-sm font-medium mb-2">Found Location</label>
+                <div className="h-64 rounded-lg overflow-hidden border border-gray-300">
+                  {location.lat && location.lng ? (
+                    <MapContainer 
+                      center={[location.lat, location.lng]} 
+                      zoom={15} 
+                      style={{ height: "100%", width: "100%" }}
+                    >
+                      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                      <LocationMarker />
+                    </MapContainer>
+                  ) : (
+                    <div className="h-full flex items-center justify-center text-gray-500">
+                      Loading map...
+                    </div>
+                  )}
+                </div>
+                <p className="mt-2 text-sm text-gray-500">Click on the map to mark the location where you found the item</p>
+              </div>
+
+              <div>
+                <label className="block text-gray-700 text-sm font-medium mb-2">Upload Image (Optional)</label>
+                <div className="flex items-center">
+                  <label className="cursor-pointer">
+                    <span className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                      Choose File
+                    </span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={(e) => setImageFile(e.target.files[0])} 
+                      className="hidden" 
+                    />
+                  </label>
+                  {imageFile && (
+                    <span className="ml-3 text-gray-700">{imageFile.name}</span>
+                  )}
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-medium disabled:bg-gray-400"
+                disabled={loading}
+              >
+                {loading ? "Submitting..." : "Report Found Item"}
+              </button>
+            </form>
           </div>
-          <div>
-            <label className="block text-gray-600 text-sm mb-1">Upload Image (Optional)</label>
-            <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} className="w-full" />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition disabled:bg-gray-400"
-            disabled={loading}
-          >
-            {loading ? "Submitting..." : "Report Item"}
-          </button>
-        </form>
+        </div>
       </div>
-      <button
-        onClick={() => navigate("/Home")}
-        className="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-700 transition"
-      >
-        Go Back to Home
-      </button>
     </div>
   );
 }
