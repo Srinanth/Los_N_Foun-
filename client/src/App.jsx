@@ -11,13 +11,13 @@ import FoundPage from "./pages/Found";
 import RecentUpdates from "./pages/Recent";
 import MapComponent from "./pages/Nearby";
 import ForumPage from "./pages/Forum";
-
+import { Toaster } from "react-hot-toast";
 
 function App() {
 
   return (
     <Router>
-     
+     <Toaster position="top-center" reverseOrder={false} />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<SignUp />} />
