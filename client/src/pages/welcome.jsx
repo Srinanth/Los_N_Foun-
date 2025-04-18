@@ -70,7 +70,6 @@ export default function LandingPage() {
 
       <footer className="mt-auto py-8 bg-white border-t">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-600">
-          {/* Info & Rights */}
           <div>
             <p className="text-sm">
               © {new Date().getFullYear()} <span className="font-semibold text-blue-600">ReturnIt</span>. All rights reserved.
@@ -79,8 +78,6 @@ export default function LandingPage() {
               We’re committed to helping users find and return lost items safely and securely using modern technology and community collaboration.
             </p>
           </div>
-
-          {/* Contact */}
           <div className="flex flex-col items-start">
             <div className="flex items-center text-blue-600 font-semibold mb-2">
               <SupportAgentIcon className="mr-2" />
@@ -93,24 +90,22 @@ export default function LandingPage() {
               </a>
             </div>
             <p className="text-sm mt-2">
-              Support available: Mon–Fri, 9 AM–6 PM
+              Support available: 24/7
             </p>
           </div>
-
-          {/* Services & Policies */}
           <div className="flex flex-col items-start">
             <div className="text-blue-600 font-semibold mb-2">Our Policies</div>
             <div className="flex items-center text-sm mb-1">
               <GavelIcon className="mr-2 text-blue-500" />
-              <a href="/terms" className="hover:underline text-blue-600">Terms of Service</a>
+              <a href="#" className="hover:underline text-blue-600">Terms of Service</a>
             </div>
             <div className="flex items-center text-sm mb-1">
               <PrivacyTipIcon className="mr-2 text-blue-500" />
-              <a href="/privacy" className="hover:underline text-blue-600">Privacy Policy</a>
+              <a href="#" className="hover:underline text-blue-600">Privacy Policy</a>
             </div>
             <div className="flex items-center text-sm">
               <HelpOutlineIcon className="mr-2 text-blue-500" />
-              <a href="/faq" className="hover:underline text-blue-600">FAQ</a>
+              <a href="#" className="hover:underline text-blue-600">FAQ</a>
             </div>
           </div>
         </div>
