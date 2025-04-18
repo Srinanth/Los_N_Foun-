@@ -2,14 +2,13 @@ import { useState, useEffect } from "react";
 import { auth } from "../firebaseConfig";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { CircularProgress, LinearProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import {
   ArrowBack,
   Search,
   ShoppingCart,
   Check,
   SentimentDissatisfied,
-  ContactMail,
   Email
 } from "@mui/icons-material";
 

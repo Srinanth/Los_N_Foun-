@@ -2,25 +2,26 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
 import { auth, googleProvider } from "../firebaseConfig";
+import { CircularProgress } from "@mui/material";
 import { createUserWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth";
+import { toast } from "react-hot-toast";
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    setError(null);
-    
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
+
+    if (!username.trim()) return toast.error("Username is required");
+    if (!email.trim()) return toast.error("Email is required");
+    if (!password) return toast.error("Password is required");
+    if (password.length < 6) return toast.error("Password must be at least 6 characters");
+    if (password !== confirmPassword) return toast.error("Passwords do not match");
 
     setLoading(true);
 
@@ -29,21 +30,37 @@ const SignUp = () => {
       const user = userCredential.user;
       await updateProfile(user, { displayName: username });
 
-      await fetch("https://los-n-found.onrender.com/api/auth/signup", {
+      const res = await fetch("https://los-n-found.onrender.com/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ uid: user.uid, username, email }),
       });
 
+      if (!res.ok) throw new Error("Failed to save user to database");
+
+      toast.success("Account created successfully!");
       navigate("/Home");
     } catch (err) {
-      setError(err.message);
+      console.error("Signup Error:", err);
+      switch (err.code) {
+        case "auth/email-already-in-use":
+          toast.error("Email already in use.");
+          break;
+        case "auth/invalid-email":
+          toast.error("Invalid email address.");
+          break;
+        case "auth/weak-password":
+          toast.error("Password too weak (min 6 characters).");
+          break;
+        default:
+          toast.error(err.message || "Something went wrong.");
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleGoogleSignIn = async () => {
-    setError(null);
     try {
       const userCredential = await signInWithPopup(auth, googleProvider);
       const user = userCredential.user;
@@ -54,9 +71,10 @@ const SignUp = () => {
         body: JSON.stringify({ uid: user.uid, username: user.displayName, email: user.email }),
       });
 
+      toast.success("Signed in with Google!");
       navigate("/Home");
     } catch (err) {
-      setError(err.message);
+      toast.error(err.message || "Google Sign-In failed.");
     }
   };
 
@@ -70,8 +88,6 @@ const SignUp = () => {
 
         <div className="w-full md:w-1/2 p-8">
           <h3 className="text-2xl font-semibold text-blue-600 mb-6">Create Your Account</h3>
-
-          {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
 
           <form onSubmit={handleSignUp} className="space-y-4">
             <div>
@@ -124,10 +140,10 @@ const SignUp = () => {
 
             <button 
               type="submit" 
-              className="w-full bg-blue-600 text-white py-2 rounded-lg mt-2 hover:bg-blue-700 transition font-medium"
+              className="w-full bg-blue-600 text-white py-2 rounded-lg mt-2 hover:bg-blue-700 transition font-medium flex items-center justify-center"
               disabled={loading}
             >
-              {loading ? "Creating Account..." : "Sign Up"}
+              {loading ? <CircularProgress size={24} color="inherit" /> : "Sign Up"}
             </button>
           </form>
 

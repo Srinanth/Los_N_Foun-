@@ -5,12 +5,12 @@ import { auth, googleProvider } from "../firebaseConfig";
 import { signInWithEmailAndPassword, signInWithPopup, onAuthStateChanged } from "firebase/auth";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { toast, Toaster } from 'react-hot-toast';
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,15 +25,15 @@ export default function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(null);
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const token = await userCredential.user.getIdToken();
-      localStorage.setItem("token", token); 
+      localStorage.setItem("token", token);
+      toast.success('Login successful!');
       navigate("/Home"); 
     } catch (error) {
-      setError(error.message);
+      toast.error("Invalid email or password");
     }
   };
 
@@ -42,9 +42,10 @@ export default function LoginPage() {
       const userCredential = await signInWithPopup(auth, googleProvider);
       const token = await userCredential.user.getIdToken();
       localStorage.setItem("token", token);
-      navigate("/Home"); 
+      toast.success('Logged in with Google!');
+      navigate("/Home");
     } catch (error) {
-      setError(error.message);
+      toast.error("Failed to login with Google");
     }
   };
 
@@ -57,8 +58,6 @@ export default function LoginPage() {
         </div>
         <div className="w-full md:w-1/2 p-8">
           <h3 className="text-2xl font-semibold text-blue-600 mb-6">Welcome Back</h3>
-
-          {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
 
           <form onSubmit={handleLogin}>
             <div className="mb-4">
