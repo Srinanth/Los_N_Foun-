@@ -127,7 +127,7 @@ const MapComponent = () => {
     return selectedLocation ? (
       <Marker position={selectedLocation} icon={DefaultIcon}>
         <Popup className={isDarkMode ? "leaflet-popup-content-wrapper-dark" : ""}>
-          <span className={isDarkMode ? "text-white" : "text-gray-800"}>Selected Location</span>
+          <span className={isDarkMode ? "text-gray-800" : "text-gray-800"}>Selected Location</span>
         </Popup>
       </Marker>
     ) : null;
@@ -198,8 +198,8 @@ const MapComponent = () => {
               >
                 <Popup className={`custom-popup ${isDarkMode ? "leaflet-popup-content-wrapper-dark" : ""}`}>
                   <div className="p-2">
-                    <h3 className={`${isDarkMode ? "text-white" : "text-gray-800"} font-bold`}>{report.description}</h3>
-                    <p className={`${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>Type: {report.type}</p>
+                    <h3 className={`${isDarkMode ? "text-gray-800" : "text-gray-800"} font-bold`}>{report.description}</h3>
+                    <p className={`${isDarkMode ? "text-gray-600" : "text-gray-600"}`}>Type: {report.type}</p>
                     {report.userId && (
                       <button
                         onClick={() => handleSendEmail(report.userId, report.description, report.type)}
