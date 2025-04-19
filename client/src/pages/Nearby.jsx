@@ -8,8 +8,8 @@ import L from "leaflet";
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 import { useNavigate } from "react-router-dom";
-import { CircularProgress } from "@mui/material";
-import { FaArrowLeft, FaSearch, FaEnvelope } from "react-icons/fa";
+import { CircularProgress, IconButton, Tooltip } from "@mui/material";
+import { FaArrowLeft, FaSearch, FaEnvelope, FaMap, FaSatellite, FaLocationArrow } from "react-icons/fa";
 
 const DefaultIcon = L.icon({
   iconUrl: icon,
@@ -30,6 +30,8 @@ const MapComponent = () => {
   const [loading, setLoading] = useState(false);
   const [emailLoading, setEmailLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [mapView, setMapView] = useState("normal");
+  const [mapInstance, setMapInstance] = useState(null);
 
   const auth = getAuth(app);
   const navigate = useNavigate();
@@ -106,11 +108,17 @@ const MapComponent = () => {
   };
 
   const LocationMarker = () => {
-    useMapEvents({
+    const map = useMapEvents({
       click(e) {
         setSelectedLocation([e.latlng.lat, e.latlng.lng]);
       },
     });
+
+    useEffect(() => {
+      if (map) {
+        setMapInstance(map);
+      }
+    }, [map]);
 
     return selectedLocation ? (
       <Marker position={selectedLocation} icon={DefaultIcon}>
@@ -119,9 +127,18 @@ const MapComponent = () => {
     ) : null;
   };
 
+  const toggleMapView = () => {
+    setMapView(prev => prev === "normal" ? "satellite" : "normal");
+  };
+
+  const centerToUserLocation = () => {
+    if (mapInstance && userLocation) {
+      mapInstance.flyTo(userLocation, 15);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
-      {/* Header */}
       <div className="bg-white shadow-sm p-4 flex justify-between items-center">
         <h1 className="text-xl font-bold text-gray-800 flex items-center">
           <FaSearch className="mr-2 text-blue-600" />
@@ -143,11 +160,20 @@ const MapComponent = () => {
             zoom={13} 
             className="h-full w-full"
             style={{ zIndex: 0 }}
+            whenCreated={(map) => setMapInstance(map)}
           >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; OpenStreetMap contributors'
-            />
+            {mapView === "normal" ? (
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+            ) : (
+              <TileLayer
+                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+              />
+            )}
+            
             {userLocation && (
               <Marker position={userLocation} icon={DefaultIcon}>
                 <Popup>You are here</Popup>
@@ -187,6 +213,28 @@ const MapComponent = () => {
                 </Popup>
               </Marker>
             ))}
+            <div className="leaflet-top leaflet-right">
+              <div className="leaflet-control leaflet-bar flex flex-col space-y-2">
+                <Tooltip title="Toggle Satellite View" placement="left">
+                  <IconButton
+                    onClick={toggleMapView}
+                    size="small"
+                    style={{ backgroundColor: 'white', color: 'black' }}
+                  >
+                    {mapView === "normal" ? <FaSatellite /> : <FaMap />}
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Center to My Location" placement="left">
+                  <IconButton
+                    onClick={centerToUserLocation}
+                    size="small"
+                    style={{ backgroundColor: 'white', color: 'black' }}
+                  >
+                    <FaLocationArrow />
+                  </IconButton>
+                </Tooltip>
+              </div>
+            </div>
           </MapContainer>
         ) : (
           <div className="h-full flex items-center justify-center">
