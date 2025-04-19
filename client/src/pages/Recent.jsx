@@ -20,6 +20,10 @@ const RecentUpdates = () => {
   const [emailStatus, setEmailStatus] = useState(null);
   const user = auth.currentUser;
   const navigate = useNavigate();
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const storedTheme = localStorage.getItem("darkMode");
+    return storedTheme ? storedTheme === "true" : false;
+  });
 
   useEffect(() => {
     if (!user) {
@@ -29,7 +33,7 @@ const RecentUpdates = () => {
 
     setLoading(true);
     setProgress(0);
-    
+
     axios.get(`https://los-n-found.onrender.com/api/matches/${user.uid}`, {
       onDownloadProgress: (progressEvent) => {
         const percentCompleted = Math.round(
@@ -57,7 +61,7 @@ const RecentUpdates = () => {
 
   useEffect(() => {
     if (!loading) return;
-    
+
     const messages = [
       "Searching database for potential matches...",
       "Analyzing item descriptions...",
@@ -65,13 +69,13 @@ const RecentUpdates = () => {
       "Calculating match probabilities...",
       "Verifying results..."
     ];
-    
+
     let i = 0;
     const interval = setInterval(() => {
       i = (i + 1) % messages.length;
       setLoadingText(messages[i]);
     }, 2000);
-  
+
     return () => clearInterval(interval);
   }, [loading]);
 
@@ -94,11 +98,13 @@ const RecentUpdates = () => {
     }
   };
 
+  const darkClass = isDarkMode ? "dark" : "";
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
+    <div className={`${darkClass} min-h-screen ${isDarkMode ? "bg-gray-900 text-white" : "bg-gradient-to-b from-blue-50 to-white text-gray-900"} p-4`}>
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800 flex items-center">
+          <h1 className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-800"} flex items-center`}>
             <Search color="primary" className="mr-2" />
             Potential Matches
           </h1>
@@ -131,45 +137,46 @@ const RecentUpdates = () => {
         )}
 
         {loading && (
-          <div className="bg-white rounded-xl shadow-md p-8">
+          <div className={`${isDarkMode ? "bg-gray-800 text-white" : "bg-white"} rounded-xl shadow-md p-8`}>
             <div className="text-center">
-              <CircularProgress 
-                size={50} 
-                className="text-blue-600 mb-4" 
+              <CircularProgress
+                size={50}
+                className="text-blue-600 mb-4"
                 thickness={4}
+                style={{ color: isDarkMode ? '#64b5f6' : '#1e88e5' }}
               />
-              <p className="text-gray-600 animate-pulse">{loadingText}</p>
+              <p className={`${isDarkMode ? "text-gray-400" : "text-gray-600"} animate-pulse`}>{loadingText}</p>
             </div>
           </div>
         )}
 
         {!loading && matches.length === 0 && (
-          <div className="bg-white rounded-xl shadow-md p-8 text-center">
+          <div className={`${isDarkMode ? "bg-gray-800 text-white" : "bg-white"} rounded-xl shadow-md p-8 text-center`}>
             <div className="text-gray-400 mb-4">
               <SentimentDissatisfied style={{ fontSize: 64 }} className="mx-auto" />
             </div>
-            <h3 className="text-xl font-medium text-gray-700 mb-2">No matches found</h3>
-            <p className="text-gray-500">We'll notify you when we find potential matches for your lost items.</p>
+            <h3 className={`text-xl font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"} mb-2`}>No matches found</h3>
+            <p className={`${isDarkMode ? "text-gray-500" : "text-gray-500"}`}>We'll notify you when we find potential matches for your lost items.</p>
           </div>
         )}
 
         {!loading && matches.length > 0 && (
           <div className="space-y-6">
             {matches.map(({ lostItem, topMatches }) => (
-              <div key={lostItem.id} className="bg-white rounded-xl shadow-md overflow-hidden">
+              <div key={lostItem.id} className={`${isDarkMode ? "bg-gray-800 text-white" : "bg-white"} rounded-xl shadow-md overflow-hidden`}>
 
-                <div className="bg-blue-50 p-4 border-b border-blue-100">
-                  <h3 className="text-lg font-semibold text-blue-700 flex items-center">
-                    <ShoppingCart color="primary" className="mr-2" />
+                <div className={`${isDarkMode ? "bg-gray-700 border-gray-600 text-white" : "bg-blue-50 border-blue-100 text-gray-700"} p-4 border-b`}>
+                  <h3 className={`text-lg font-semibold flex items-center ${isDarkMode ? "text-blue-400" : "text-blue-700"}`}>
+                    <ShoppingCart color="primary" className="mr-2" style={{ color: isDarkMode ? '#64b5f6' : '#1e88e5' }} />
                     Your Lost Item
                   </h3>
-                  <p className="text-gray-700 mt-1">{lostItem.description}</p>
+                  <p className="mt-1">{lostItem.description}</p>
                   {lostItem.imageUrl && (
                     <div className="mt-4 flex justify-center">
                       <div className="max-w-full max-h-96 overflow-hidden rounded-md border border-gray-200">
-                        <img 
-                          src={lostItem.imageUrl} 
-                          alt="Lost item" 
+                        <img
+                          src={lostItem.imageUrl}
+                          alt="Lost item"
                           className="w-full h-auto max-h-96 object-contain"
                           style={{ display: 'block' }}
                         />
@@ -178,21 +185,21 @@ const RecentUpdates = () => {
                   )}
                 </div>
                 <div className="p-4">
-                  <h4 className="text-md font-medium text-gray-800 mb-3 flex items-center">
-                    <Check color="success" className="mr-2" />
+                  <h4 className={`text-md font-medium flex items-center ${isDarkMode ? "text-gray-300" : "text-gray-800"} mb-3`}>
+                    <Check color="success" className="mr-2" style={{ color: '#4caf50' }} />
                     Potential Matches ({topMatches.length})
                   </h4>
 
                   {topMatches.length > 0 ? (
                     <div className="space-y-3">
                       {topMatches.map((match) => (
-                        <div 
-                          key={match.foundItem.id} 
-                          className="p-3 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors"
+                        <div
+                          key={match.foundItem.id}
+                          className={`${isDarkMode ? "bg-gray-700 border-gray-600 text-white" : "bg-white border-gray-200 text-gray-700"} p-3 border rounded-lg hover:border-blue-300 transition-colors`}
                         >
                           <div className="flex justify-between items-start">
                             <div>
-                              <p className="text-gray-700 font-medium">{match.foundItem.description}</p>
+                              <p className="font-medium">{match.foundItem.description}</p>
                             </div>
                             <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
                               {match.similarity ? `${(match.similarity * 100).toFixed(1)}% match` : "Possible match"}
@@ -200,9 +207,9 @@ const RecentUpdates = () => {
                           </div>
                           {match.foundItem.imageUrl && (
                             <div className="mt-2">
-                              <img 
-                                src={match.foundItem.imageUrl} 
-                                alt="Found item" 
+                              <img
+                                src={match.foundItem.imageUrl}
+                                alt="Found item"
                                 className="h-24 w-full object-cover rounded-md border border-gray-200"
                               />
                             </div>
@@ -210,22 +217,22 @@ const RecentUpdates = () => {
                           <div className="mt-3 flex space-x-2">
                             <button
                               onClick={() => handleSendEmail(
-                                match.foundItem.userId, 
-                                lostItem.description, 
+                                match.foundItem.userId,
+                                lostItem.description,
                                 lostItem.type
                               )}
-                              className="flex-1 bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition flex items-center justify-center text-sm"
+                              className={`flex-1 ${isDarkMode ? "bg-blue-700 hover:bg-blue-600 text-white" : "bg-blue-600 text-white hover:bg-blue-700"} px-3 py-2 rounded-md transition flex items-center justify-center text-sm`}
                             >
                               <Email className="mr-1" style={{ fontSize: 16 }} />
                               Send Email
                             </button>
-                          
+
                           </div>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="bg-gray-50 p-4 rounded-lg text-center text-gray-500">
+                    <div className={`${isDarkMode ? "bg-gray-600 text-gray-400" : "bg-gray-50 text-gray-500"} p-4 rounded-lg text-center`}>
                       No close matches found for this item
                     </div>
                   )}

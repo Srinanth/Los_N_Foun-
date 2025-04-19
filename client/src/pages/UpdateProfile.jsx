@@ -16,6 +16,10 @@ export default function UpdateProfile() {
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const storedTheme = localStorage.getItem("darkMode");
+    return storedTheme ? storedTheme === "true" : false;
+  });
 
   const navigate = useNavigate();
 
@@ -89,26 +93,28 @@ export default function UpdateProfile() {
     }
   };
 
+  const darkClass = isDarkMode ? "dark" : "";
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4 md:p-6">
+    <div className={`${darkClass} min-h-screen ${isDarkMode ? "bg-gray-900 text-white" : "bg-gradient-to-b from-blue-50 to-white text-gray-900"} p-4 md:p-6`}>
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-4 md:mb-8">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center text-blue-600 hover:text-blue-800 transition"
+            className={`flex items-center ${isDarkMode ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-800"} transition`}
           >
             <FaArrowLeft className="mr-2" />
             <span className="hidden sm:inline">Back</span>
           </button>
-          <h1 className="text-xl md:text-2xl font-bold text-blue-600">ReturnIt</h1>
+          <h1 className={`text-xl md:text-2xl font-bold ${isDarkMode ? "text-blue-400" : "text-blue-600"}`}>ReturnIt</h1>
         </div>
 
-        <div className="bg-white shadow-lg rounded-xl overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-16 md:h-32"></div>
-          
+        <div className={`${isDarkMode ? "bg-gray-800 text-white shadow-lg" : "bg-white text-gray-800 shadow-lg"} rounded-xl overflow-hidden`}>
+          <div className={`${isDarkMode ? "bg-gradient-to-r from-blue-600 to-blue-700" : "bg-gradient-to-r from-blue-500 to-blue-600"} h-16 md:h-32`}></div>
+
           <div className="px-4 md:px-6 pb-6">
             <div className="flex flex-col items-center relative">
-              <div className="relative -mt-12 md:-mt-20 bg-white p-1 rounded-full shadow-md">
+              <div className="relative -mt-12 md:-mt-20 p-1 rounded-full shadow-md" style={{ backgroundColor: isDarkMode ? '#4a5568' : 'white' }}>
                 {formData.profileImage ? (
                   <img
                     src={formData.profileImage}
@@ -116,28 +122,23 @@ export default function UpdateProfile() {
                     className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover"
                   />
                 ) : (
-                  <AccountCircleIcon style={{ fontSize: 96 }} className="text-blue-500 md:text-[128px]" />
+                  <AccountCircleIcon style={{ fontSize: 96, color: isDarkMode ? '#64b5f6' : '#1e88e5' }} className="md:text-[128px]" />
                 )}
               </div>
-              <h2 className="text-xl md:text-2xl font-bold text-gray-800 mt-4 md:mt-6 mb-4 md:mb-6">
+              <h2 className={`text-xl md:text-2xl font-bold mt-4 md:mt-6 mb-4 md:mb-6 ${isDarkMode ? "text-white" : "text-gray-800"}`}>
                 Update Profile
               </h2>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
               <div className="mt-2">
-                <label className="block text-sm font-medium text-blue-600 mb-1">
+                <label className={`block text-sm font-medium mb-1 ${isDarkMode ? "text-blue-300" : "text-blue-600"}`}>
                   Change Profile Picture
                 </label>
                 <input
                   type="file"
                   accept="image/*"
-                  className="block w-full text-sm text-gray-500
-                    file:mr-2 file:py-1 md:file:py-2 file:px-3 md:file:px-4
-                    file:rounded-md file:border-0
-                    file:text-xs md:file:text-sm file:font-semibold
-                    file:bg-blue-50 file:text-blue-700
-                    hover:file:bg-blue-100"
+                  className={`block w-full text-sm text-gray-500 file:mr-2 file:py-1 md:file:py-2 file:px-3 md:file:px-4 file:rounded-md file:border-0 file:text-xs md:file:text-sm file:font-semibold ${isDarkMode ? "file:bg-blue-800 file:text-blue-200" : "file:bg-blue-50 file:text-blue-700"} hover:file:${isDarkMode ? "bg-blue-700" : "bg-blue-100"}`}
                   onChange={handleImageChange}
                 />
               </div>
@@ -149,11 +150,11 @@ export default function UpdateProfile() {
               )}
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-blue-600 mb-1">Name</label>
+                  <label className={`block text-sm font-medium mb-1 ${isDarkMode ? "text-blue-300" : "text-blue-600"}`}>Name</label>
                   <input
                     name="name"
                     type="text"
-                    className="w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className={`w-full p-2 md:p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isDarkMode ? "border-gray-600 bg-gray-700 text-white" : "border-gray-300 text-gray-800"}`}
                     value={formData.name}
                     onChange={handleChange}
                     required
@@ -161,11 +162,11 @@ export default function UpdateProfile() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-blue-600 mb-1">Email</label>
+                  <label className={`block text-sm font-medium mb-1 ${isDarkMode ? "text-blue-300" : "text-blue-600"}`}>Email</label>
                   <input
                     name="email"
                     type="email"
-                    className="w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className={`w-full p-2 md:p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isDarkMode ? "border-gray-600 bg-gray-700 text-white" : "border-gray-300 text-gray-800"}`}
                     value={formData.email}
                     onChange={handleChange}
                     required
@@ -173,11 +174,11 @@ export default function UpdateProfile() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-blue-600 mb-1">Phone</label>
+                  <label className={`block text-sm font-medium mb-1 ${isDarkMode ? "text-blue-300" : "text-blue-600"}`}>Phone</label>
                   <input
                     name="phone"
                     type="text"
-                    className="w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className={`w-full p-2 md:p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isDarkMode ? "border-gray-600 bg-gray-700 text-white" : "border-gray-300 text-gray-800"}`}
                     value={formData.phone}
                     onChange={handleChange}
                   />
@@ -187,7 +188,7 @@ export default function UpdateProfile() {
               <div className="pt-2 md:pt-4">
                 <button
                   type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 md:py-3 px-4 rounded-lg transition flex items-center justify-center"
+                  className={`w-full ${isDarkMode ? "bg-blue-700 hover:bg-blue-600 text-white" : "bg-blue-600 hover:bg-blue-700 text-white"} font-medium py-2 md:py-3 px-4 rounded-lg transition flex items-center justify-center`}
                   disabled={loading}
                 >
                   {loading ? (

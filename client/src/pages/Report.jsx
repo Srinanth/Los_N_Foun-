@@ -28,6 +28,10 @@ export default function ReportPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const storedTheme = localStorage.getItem("darkMode");
+    return storedTheme ? storedTheme === "true" : false;
+  });
 
   const navigate = useNavigate();
   const auth = getAuth(app);
@@ -102,6 +106,7 @@ export default function ReportPage() {
       description,
       location,
       imageUrl,
+      userId: user.uid, // Include user ID
     };
 
     try {
@@ -131,13 +136,15 @@ export default function ReportPage() {
     setLoading(false);
   };
 
+  const darkClass = isDarkMode ? "dark" : "";
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
+    <div className={`${darkClass} min-h-screen ${isDarkMode ? "bg-gray-900 text-white" : "bg-gradient-to-b from-blue-50 to-white text-gray-900"} p-4`}>
       <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+        <div className={`${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"} rounded-xl shadow-md overflow-hidden`}>
           <div className="p-6 md:p-8">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-800">Report a Lost Item</h2>
+              <h2 className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-800"}`}>Report a Lost Item</h2>
               <button
                 onClick={() => navigate("/Home")}
                 className="text-blue-600 hover:text-blue-800 font-medium"
@@ -156,11 +163,11 @@ export default function ReportPage() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="block text-gray-700 text-sm font-medium mb-2">Category</label>
+                <label className={`block text-sm font-medium mb-2 ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>Category</label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className={`w-full px-4 py-3 border ${isDarkMode ? "border-gray-600 bg-gray-700 text-white" : "border-gray-300"} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                   required
                 >
                   <option value="">Select a category</option>
@@ -171,11 +178,11 @@ export default function ReportPage() {
               </div>
 
               <div>
-                <label className="block text-gray-700 text-sm font-medium mb-2">Description</label>
+                <label className={`block text-sm font-medium mb-2 ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>Description</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className={`w-full px-4 py-3 border ${isDarkMode ? "border-gray-600 bg-gray-700 text-white" : "border-gray-300"} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                   placeholder="Describe the lost item (color, brand, identifying marks, etc.)"
                   rows="4"
                   required
@@ -183,13 +190,14 @@ export default function ReportPage() {
               </div>
 
               <div>
-                <label className="block text-gray-700 text-sm font-medium mb-2">Location</label>
+                <label className={`block text-sm font-medium mb-2 ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>Location</label>
                 <div className="h-64 rounded-lg overflow-hidden border border-gray-300">
                   {location.lat && location.lng ? (
-                    <MapContainer 
-                      center={[location.lat, location.lng]} 
-                      zoom={15} 
+                    <MapContainer
+                      center={[location.lat, location.lng]}
+                      zoom={15}
                       style={{ height: "100%", width: "100%" }}
+                      className={isDarkMode ? "leaflet-container-dark" : ""}
                     >
                       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                       <LocationMarker />
@@ -200,32 +208,32 @@ export default function ReportPage() {
                     </div>
                   )}
                 </div>
-                <p className="mt-2 text-sm text-gray-500">Click on the map to mark the location</p>
+                <p className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>Click on the map to mark the location</p>
               </div>
 
               <div>
-                <label className="block text-gray-700 text-sm font-medium mb-2">Upload Image (Optional)</label>
+                <label className={`block text-sm font-medium mb-2 ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>Upload Image (Optional)</label>
                 <div className="flex items-center">
                   <label className="cursor-pointer">
                     <span className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
                       Choose File
                     </span>
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      onChange={(e) => setImageFile(e.target.files[0])} 
-                      className="hidden" 
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setImageFile(e.target.files[0])}
+                      className="hidden"
                     />
                   </label>
                   {imageFile && (
-                    <span className="ml-3 text-gray-700">{imageFile.name}</span>
+                    <span className={`ml-3 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-700"}`}>{imageFile.name}</span>
                   )}
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-medium disabled:bg-gray-400"
+                className={`w-full ${isDarkMode ? "bg-blue-700 hover:bg-blue-600 text-white" : "bg-blue-600 text-white hover:bg-blue-700"} py-3 rounded-lg transition font-medium disabled:bg-gray-400`}
                 disabled={loading}
               >
                 {loading ? "Submitting..." : "Report Item"}
