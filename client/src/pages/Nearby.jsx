@@ -126,7 +126,9 @@ const MapComponent = () => {
 
     return selectedLocation ? (
       <Marker position={selectedLocation} icon={DefaultIcon}>
-        <Popup className={isDarkMode ? "leaflet-popup-content-wrapper-dark" : ""}>Selected Location</Popup>
+        <Popup className={isDarkMode ? "leaflet-popup-content-wrapper-dark" : ""}>
+          <span className={isDarkMode ? "text-white" : "text-gray-800"}>Selected Location</span>
+        </Popup>
       </Marker>
     ) : null;
   };
@@ -182,7 +184,9 @@ const MapComponent = () => {
 
             {userLocation && (
               <Marker position={userLocation} icon={DefaultIcon}>
-                <Popup className={isDarkMode ? "leaflet-popup-content-wrapper-dark" : ""}>You are here</Popup>
+                <Popup className={isDarkMode ? "leaflet-popup-content-wrapper-dark" : ""}>
+                  <span className={isDarkMode ? "text-white" : "text-gray-800"}>You are here</span>
+                </Popup>
               </Marker>
             )}
             <LocationMarker />
