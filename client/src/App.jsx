@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
+import { ThemeProvider, useTheme } from  "./components/theme";
 import LoginPage from "./pages/Login";
 import LandingPage from "./pages/welcome";
 import SignUp from "./pages/SignUp";
@@ -16,6 +17,7 @@ import { Toaster } from "react-hot-toast";
 function App() {
 
   return (
+    <ThemeProvider>
     <Router>
      <Toaster position="top-center" reverseOrder={false} />
       <Routes>
@@ -33,6 +35,7 @@ function App() {
       </Routes>
      
     </Router>
+    </ThemeProvider>
   );
 }
 

@@ -1,2 +1,7 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
+
+.dark body {
+    background-color: #121212;
+    color: white;
+  }

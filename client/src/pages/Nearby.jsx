@@ -32,6 +32,10 @@ const MapComponent = () => {
   const [error, setError] = useState(null);
   const [mapView, setMapView] = useState("normal");
   const [mapInstance, setMapInstance] = useState(null);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const storedTheme = localStorage.getItem("darkMode");
+    return storedTheme ? storedTheme === "true" : false;
+  });
 
   const auth = getAuth(app);
   const navigate = useNavigate();
@@ -122,7 +126,7 @@ const MapComponent = () => {
 
     return selectedLocation ? (
       <Marker position={selectedLocation} icon={DefaultIcon}>
-        <Popup>Selected Location</Popup>
+        <Popup className={isDarkMode ? "leaflet-popup-content-wrapper-dark" : ""}>Selected Location</Popup>
       </Marker>
     ) : null;
   };
@@ -137,10 +141,12 @@ const MapComponent = () => {
     }
   };
 
+  const darkClass = isDarkMode ? "dark" : "";
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
-      <div className="bg-white shadow-sm p-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-gray-800 flex items-center">
+    <div className={`${darkClass} min-h-screen ${isDarkMode ? "bg-gray-900 text-white" : "bg-gradient-to-b from-blue-50 to-white text-gray-900"} flex flex-col`}>
+      <div className={`${isDarkMode ? "bg-gray-800 text-white shadow-md" : "bg-white shadow-sm text-gray-800"} p-4 flex justify-between items-center`}>
+        <h1 className="text-xl font-bold flex items-center">
           <FaSearch className="mr-2 text-blue-600" />
           Map Search
         </h1>
@@ -155,9 +161,9 @@ const MapComponent = () => {
 
       <div className="flex-grow relative" style={{ height: "60vh" }}>
         {position ? (
-          <MapContainer 
-            center={position} 
-            zoom={13} 
+          <MapContainer
+            center={position}
+            zoom={13}
             className="h-full w-full"
             style={{ zIndex: 0 }}
             whenCreated={(map) => setMapInstance(map)}
@@ -173,10 +179,10 @@ const MapComponent = () => {
                 attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
               />
             )}
-            
+
             {userLocation && (
               <Marker position={userLocation} icon={DefaultIcon}>
-                <Popup>You are here</Popup>
+                <Popup className={isDarkMode ? "leaflet-popup-content-wrapper-dark" : ""}>You are here</Popup>
               </Marker>
             )}
             <LocationMarker />
@@ -186,19 +192,19 @@ const MapComponent = () => {
                 position={[report.location.lat, report.location.lng]}
                 icon={DefaultIcon}
               >
-                <Popup className="custom-popup">
+                <Popup className={`custom-popup ${isDarkMode ? "leaflet-popup-content-wrapper-dark" : ""}`}>
                   <div className="p-2">
-                    <h3 className="font-bold text-gray-800">{report.description}</h3>
-                    <p className="text-gray-600">Type: {report.type}</p>
+                    <h3 className={`${isDarkMode ? "text-white" : "text-gray-800"} font-bold`}>{report.description}</h3>
+                    <p className={`${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>Type: {report.type}</p>
                     {report.userId && (
                       <button
                         onClick={() => handleSendEmail(report.userId, report.description, report.type)}
-                        className="mt-2 w-full bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition flex items-center justify-center"
+                        className={`mt-2 w-full ${isDarkMode ? "bg-blue-700 hover:bg-blue-600 text-white" : "bg-blue-600 text-white hover:bg-blue-700"} px-3 py-1 rounded-md transition flex items-center justify-center`}
                         disabled={emailLoading}
                       >
                         {emailLoading ? (
                           <>
-                            <CircularProgress size={16} color="white" className="text-white mr-2" />
+                            <CircularProgress size={16} color="inherit" className="mr-2" />
                             Sending...
                           </>
                         ) : (
@@ -219,7 +225,7 @@ const MapComponent = () => {
                   <IconButton
                     onClick={toggleMapView}
                     size="small"
-                    style={{ backgroundColor: 'white', color: 'black' }}
+                    style={{ backgroundColor: isDarkMode ? '#4a5568' : 'white', color: isDarkMode ? 'white' : 'black' }}
                   >
                     {mapView === "normal" ? <FaSatellite /> : <FaMap />}
                   </IconButton>
@@ -228,7 +234,7 @@ const MapComponent = () => {
                   <IconButton
                     onClick={centerToUserLocation}
                     size="small"
-                    style={{ backgroundColor: 'white', color: 'black' }}
+                    style={{ backgroundColor: isDarkMode ? '#4a5568' : 'white', color: isDarkMode ? 'white' : 'black' }}
                   >
                     <FaLocationArrow />
                   </IconButton>
@@ -243,22 +249,22 @@ const MapComponent = () => {
         )}
       </div>
 
-      <div className="bg-white p-4 shadow-lg border-t border-gray-200">
+      <div className={`${isDarkMode ? "bg-gray-800 text-white border-gray-700" : "bg-white border-gray-200"} p-4 shadow-lg border-t`}>
         {selectedLocation && (
-          <p className="text-sm text-gray-600 mb-2">
+          <p className="text-sm">
             Selected: {selectedLocation[0].toFixed(5)}, {selectedLocation[1].toFixed(5)}
           </p>
         )}
-        
-        <div className="flex space-x-2">
+
+        <div className="flex space-x-2 mt-2">
           <button
             onClick={fetchItems}
-            className="flex-grow bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition font-medium flex items-center justify-center"
+            className={`flex-grow ${isDarkMode ? "bg-blue-700 hover:bg-blue-600 text-white" : "bg-blue-600 text-white hover:bg-blue-700"} px-4 py-3 rounded-lg transition font-medium flex items-center justify-center`}
             disabled={loading}
           >
             {loading ? (
               <>
-                <CircularProgress size={20}  color="white" className="text-white mr-2" />
+                <CircularProgress size={20} color="inherit" className="mr-2" />
                 Searching...
               </>
             ) : (
@@ -275,7 +281,7 @@ const MapComponent = () => {
         )}
 
         {reports.length === 0 && !loading && (
-          <p className="mt-2 text-gray-500 text-sm text-center">
+          <p className="mt-2 text-sm text-center">
             {selectedLocation ? "No items found in this area" : "Select a location on the map"}
           </p>
         )}
