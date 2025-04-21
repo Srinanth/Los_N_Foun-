@@ -73,7 +73,7 @@ export default function UpdateProfile() {
 
       try {
         const response = await axios.post(
-          "https://api.cloudinary.com/v1_1/your_cloud_name/image/upload",
+          "https://los-n-found.onrender.com/api/cloudinary/upload",
           formDataImage
         );
         imageUrl = response.data.secure_url;
