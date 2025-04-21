@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { FaUserEdit } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 export default function ProfilePage() {
@@ -31,7 +30,7 @@ export default function ProfilePage() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [navigate]);
 
   const fetchUserProfile = async (id) => {
     try {

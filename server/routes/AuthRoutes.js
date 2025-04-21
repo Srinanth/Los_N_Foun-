@@ -26,7 +26,6 @@ UserRouter.post("/signup", verifyUser, async (req, res) => {
   }
 });
 
-// **User Login**
 UserRouter.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -39,7 +38,7 @@ UserRouter.post("/login", async (req, res) => {
 
     if (!isValidPassword) return res.status(401).json({ error: "Invalid credentials" });
 
-    // Generate token after successful login
+
     const token = generateToken(email);
 
     return res.status(200).json({ message: "Login successful", token });

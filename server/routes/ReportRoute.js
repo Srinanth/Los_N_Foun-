@@ -12,17 +12,15 @@ Reportrouter.post("/report", async (req, res) => {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  // Validate required fields
   if (!category || !description || !location || !location.lat || !location.lng) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
   try {
-    // Verify the user's ID token
+
     const user = await auth.verifyIdToken(token);
     const userId = user.uid;
 
-    // Save report data to Firestore
     const reportData = {
       userId,
       category,
@@ -31,7 +29,7 @@ Reportrouter.post("/report", async (req, res) => {
         lat: location.lat,
         lng: location.lng,
       },
-      imageUrl: imageUrl || null, // Optional field
+      imageUrl: imageUrl || null,
       createdAt: new Date().toISOString(),
     };
 

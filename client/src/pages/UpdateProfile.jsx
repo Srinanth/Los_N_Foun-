@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, updateEmail } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { FaArrowLeft } from "react-icons/fa";
@@ -13,6 +13,7 @@ export default function UpdateProfile() {
     phone: "",
     profileImage: "",
   });
+  const [newEmail, setNewEmail] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -22,9 +23,9 @@ export default function UpdateProfile() {
   });
 
   const navigate = useNavigate();
+  const auth = getAuth();
 
   useEffect(() => {
-    const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUserId(currentUser.uid);
@@ -39,6 +40,7 @@ export default function UpdateProfile() {
     try {
       const response = await axios.get(`https://los-n-found.onrender.com/api/profile/${id}`);
       setFormData(response.data);
+      setNewEmail(response.data.email || ""); 
     } catch (error) {
       console.error("Error fetching profile:", error);
       setError("Failed to load profile data");
@@ -47,6 +49,10 @@ export default function UpdateProfile() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleNewEmailChange = (e) => {
+    setNewEmail(e.target.value);
   };
 
   const handleImageChange = (e) => {
@@ -79,15 +85,29 @@ export default function UpdateProfile() {
       }
     }
 
+    const updatePayload = {
+      name: formData.name,
+      phone: formData.phone,
+      profileImage: imageUrl,
+    };
+
+    if (newEmail && newEmail !== formData.email) {
+      updatePayload.email = newEmail;
+    }
+
     try {
-      await axios.put(`https://los-n-found.onrender.com/api/profile/${userId}`, {
-        ...formData,
-        profileImage: imageUrl,
-      });
+      await axios.put(`https://los-n-found.onrender.com/api/profile/${userId}`, updatePayload);
+      if (newEmail && newEmail !== formData.email) {
+        await updateEmail(auth.currentUser, newEmail);
+      }
+
       navigate("/profile");
     } catch (error) {
       console.error("Error updating profile:", error);
       setError("Failed to update profile!");
+      if (error.response?.data?.error) {
+        setError(error.response.data.error); 
+      }
     } finally {
       setLoading(false);
     }
@@ -167,8 +187,8 @@ export default function UpdateProfile() {
                     name="email"
                     type="email"
                     className={`w-full p-2 md:p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isDarkMode ? "border-gray-600 bg-gray-700 text-white" : "border-gray-300 text-gray-800"}`}
-                    value={formData.email}
-                    onChange={handleChange}
+                    value={newEmail}
+                    onChange={handleNewEmailChange}
                     required
                   />
                 </div>
