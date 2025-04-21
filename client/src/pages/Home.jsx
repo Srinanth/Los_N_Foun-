@@ -1,10 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Menu, X, Moon, Sun } from "lucide-react";
+import { Menu, X, Moon, Sun,HelpCircle } from "lucide-react";
 import { getAuth } from "firebase/auth";
 import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 import { app } from "../firebaseConfig";
 import LinearProgress from '@mui/material/LinearProgress';
+import YourBadgesSection from "../assets/badges";
+
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -60,13 +62,13 @@ useEffect(() => {
     auth.signOut();
     navigate("/login");
   };
-
+  
   const darkClass = isDarkMode ? "dark" : "";
 
   return (
     <div className={`${isDarkMode ? "bg-gray-900 text-white" : "bg-gradient-to-b from-blue-50 to-white text-gray-900"} min-h-screen p-4 transition-colors duration-500`}>
       <nav className={`hidden md:flex justify-between items-center ${isDarkMode ? "bg-gray-800" : "bg-white"} shadow-sm p-4 rounded-lg`}>
-        <div className="flex gap-6">
+        <div className="flex gap-45 space-x-4">
           {[
             { name: "Report Lost", path: "/report" },
             { name: "Report Found", path: "/found" },
@@ -111,6 +113,10 @@ useEffect(() => {
         <button className="absolute top-4 right-4" onClick={() => setIsSidebarOpen(false)}>
           <X size={24} className={`${isDarkMode ? "text-gray-300" : "text-gray-500"}`} />
         </button>
+        <Link to="/Home" className={`mt-8 block text-4xl font-bold ${isDarkMode ? "text-blue-400" : "text-blue-600"}`}>
+          ReturnIt
+        </Link>
+        <div className={`h-0.5 w-52 mt-5 ${isDarkMode ? "bg-blue-400" : "bg-blue-600"}`}></div>
         <div className="mt-12 flex flex-col gap-4">
           {[
             { name: "Report Lost", path: "/report" },
@@ -227,12 +233,13 @@ useEffect(() => {
           </section>
           <section className="mb-12">
             <h2 className="text-2xl font-bold mb-6">Your Badges</h2>
-            <div className={`p-8 rounded-xl shadow-sm text-center ${isDarkMode ? "bg-gray-800 text-gray-300" : "bg-white text-gray-600"}`}>
-              <p className="mb-4">No badges earned yet</p>
-              <Link to="/Home" className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
-                View Available Badges
-              </Link>
-            </div>
+                <div className={`p-8 rounded-xl shadow-sm text-center ${isDarkMode ? "bg-gray-800 text-gray-300" : "bg-white text-gray-600"}`}>
+                <YourBadgesSection
+                      isDarkMode={isDarkMode}
+                      reportedItems={reportedItems}
+                      foundItems={foundItems}
+                    />
+                </div>
           </section>
         </div>
       </div>

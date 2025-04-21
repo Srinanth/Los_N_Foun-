@@ -46,6 +46,15 @@ export default function ReportPage() {
       { enableHighAccuracy: true }
     );
   }, []);
+  
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        navigate("/Home");
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [success, navigate]);
 
   function LocationMarker() {
     useMapEvents({

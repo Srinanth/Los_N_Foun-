@@ -1,31 +1,32 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { getAuth, onAuthStateChanged, updateEmail } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { FaArrowLeft } from "react-icons/fa";
+import { toast } from 'react-hot-toast';
 
 export default function UpdateProfile() {
   const [userId, setUserId] = useState(null);
+  const [initialData, setInitialData] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     profileImage: "",
   });
-  const [newEmail, setNewEmail] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const storedTheme = localStorage.getItem("darkMode");
-    return storedTheme ? storedTheme === "true" : false;
+  const [success, setSuccess] = useState(null);
+  const [isDarkMode] = useState(() => {
+    return localStorage.getItem("darkMode") === "true";
   });
 
   const navigate = useNavigate();
-  const auth = getAuth();
 
   useEffect(() => {
+    const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUserId(currentUser.uid);
@@ -39,8 +40,13 @@ export default function UpdateProfile() {
   const fetchUserProfile = async (id) => {
     try {
       const response = await axios.get(`https://los-n-found.onrender.com/api/profile/${id}`);
-      setFormData(response.data);
-      setNewEmail(response.data.email || "");
+      setInitialData(response.data);
+      setFormData({
+        name: response.data.name || "",
+        email: response.data.email || "",
+        phone: response.data.phone || "",
+        profileImage: response.data.profileImage || "",
+      });
     } catch (error) {
       console.error("Error fetching profile:", error);
       setError("Failed to load profile data");
@@ -51,61 +57,103 @@ export default function UpdateProfile() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleNewEmailChange = (e) => {
-    setNewEmail(e.target.value);
-  };
-
   const handleImageChange = (e) => {
-    setImageFile(e.target.files[0]);
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.size > 5 * 1024 * 1024) { 
+        setError("Image size should be less than 5MB");
+        return;
+      }
+      
+      setImageFile(file);
+      setError(null);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setFormData(prev => ({ ...prev, profileImage: event.target.result }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setSuccess(null);
+
+    if (!formData.name.trim()) {
+      setError("Name is required");
+      setLoading(false);
+      return;
+    }
+
+    if (!formData.email.trim()) {
+      setError("Email is required");
+      setLoading(false);
+      return;
+    }
+
+    if (initialData && 
+        formData.name === initialData.name &&
+        formData.email === initialData.email &&
+        formData.phone === initialData.phone &&
+        !imageFile) {
+      setLoading(false);
+      setSuccess("No changes detected");
+      setTimeout(() => navigate("/profile"), 1500);
+      return;
+    }
 
     let imageUrl = formData.profileImage;
 
     if (imageFile) {
       const formDataImage = new FormData();
-      formDataImage.append("image", imageFile);
+      formDataImage.append("image", imageFile); 
 
       try {
-        const response = await axios.post(
-          "https://los-n-found.onrender.com/api/cloudinary/upload",
-          formDataImage
-        );
-        imageUrl = response.data.secure_url;
+        const uploadResponse = await fetch("https://los-n-found.onrender.com/api/cloudinary/upload", {
+          method: "POST",
+          body: formDataImage,
+        });
+
+        const uploadData = await uploadResponse.json();
+        if (uploadResponse.ok) {
+          imageUrl = uploadData.imageUrl;
+        } else {
+          throw new Error("Image upload failed.");
+        }
       } catch (error) {
-        console.error("Error uploading image:", error);
-        setError("Image upload failed!");
+        setError("Image upload failed. Please try again.");
         setLoading(false);
         return;
       }
     }
 
-    const updatePayload = {
-      name: formData.name,
-      phone: formData.phone,
-      profileImage: imageUrl,
-    };
-
-    if (newEmail && newEmail !== formData.email) {
-      updatePayload.email = newEmail;
-    }
-
     try {
-      await axios.put(`https://los-n-found.onrender.com/api/profile/${userId}`, updatePayload);
-      if (newEmail && newEmail !== formData.email) {
-        await updateEmail(auth.currentUser, newEmail);
+      const updatePayload = {
+        name: formData.name,
+        phone: formData.phone,
+        profileImage: imageUrl,
+      };
+      if (initialData?.email !== formData.email) {
+        updatePayload.email = formData.email;
       }
-      navigate("/profile");
+
+      const response = await axios.put(
+        
+        `https://los-n-found.onrender.com/api/update/${userId}`,
+        updatePayload
+      );
+
+      setSuccess("Profile updated successfully!");
+      toast.success("Profile updated successfully!");
+      setTimeout(() => navigate(`/profile/${userId}`), 1500);
     } catch (error) {
       console.error("Error updating profile:", error);
-      setError("Failed to update profile!");
-      if (error.response?.data?.error) {
-        setError(error.response.data.error);
-      }
+      setError(error.response?.data?.error || 
+               error.response?.data?.details || 
+               "Failed to update profile!");
+               toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -137,10 +185,16 @@ export default function UpdateProfile() {
                   <img
                     src={formData.profileImage}
                     alt="Profile"
-                    className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover"
+                    className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border-2 border-white"
                   />
                 ) : (
-                  <AccountCircleIcon style={{ fontSize: 96, color: isDarkMode ? '#64b5f6' : '#1e88e5' }} className="md:text-[128px]" />
+                  <AccountCircleIcon 
+                    style={{ 
+                      fontSize: 96, 
+                      color: isDarkMode ? '#64b5f6' : '#1e88e5' 
+                    }} 
+                    className="md:text-[128px]" 
+                  />
                 )}
               </div>
               <h2 className={`text-xl md:text-2xl font-bold mt-4 md:mt-6 mb-4 md:mb-6 ${isDarkMode ? "text-white" : "text-gray-800"}`}>
@@ -159,16 +213,28 @@ export default function UpdateProfile() {
                   className={`block w-full text-sm text-gray-500 file:mr-2 file:py-1 md:file:py-2 file:px-3 md:file:px-4 file:rounded-md file:border-0 file:text-xs md:file:text-sm file:font-semibold ${isDarkMode ? "file:bg-blue-800 file:text-blue-200" : "file:bg-blue-50 file:text-blue-700"} hover:file:${isDarkMode ? "bg-blue-700" : "bg-blue-100"}`}
                   onChange={handleImageChange}
                 />
+                <p className={`mt-1 text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
+                  JPG, PNG or GIF (Max 5MB)
+                </p>
               </div>
 
               {error && (
-                <div className="bg-red-50 border-l-4 border-red-500 p-3 md:p-4">
-                  <p className="text-red-700 text-sm md:text-base">{error}</p>
+                <div className={`p-3 md:p-4 rounded-lg ${isDarkMode ? "bg-red-900 text-red-200" : "bg-red-50 text-red-700"}`}>
+                  <p className="text-sm md:text-base">{error}</p>
                 </div>
               )}
+
+              {success && (
+                <div className={`p-3 md:p-4 rounded-lg ${isDarkMode ? "bg-green-900 text-green-200" : "bg-green-50 text-green-700"}`}>
+                  <p className="text-sm md:text-base">{success}</p>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
                 <div>
-                  <label className={`block text-sm font-medium mb-1 ${isDarkMode ? "text-blue-300" : "text-blue-600"}`}>Name</label>
+                  <label className={`block text-sm font-medium mb-1 ${isDarkMode ? "text-blue-300" : "text-blue-600"}`}>
+                    Full Name
+                  </label>
                   <input
                     name="name"
                     type="text"
@@ -180,25 +246,33 @@ export default function UpdateProfile() {
                 </div>
 
                 <div>
-                  <label className={`block text-sm font-medium mb-1 ${isDarkMode ? "text-blue-300" : "text-blue-600"}`}>Email</label>
+                  <label className={`block text-sm font-medium mb-1 ${isDarkMode ? "text-blue-300" : "text-blue-600"}`}>
+                    Email
+                    {initialData?.email && formData.email !== initialData.email && (
+                      <span className="ml-2 text-xs text-yellow-600">(Changing email will require verification)</span>
+                    )}
+                  </label>
                   <input
                     name="email"
                     type="email"
                     className={`w-full p-2 md:p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isDarkMode ? "border-gray-600 bg-gray-700 text-white" : "border-gray-300 text-gray-800"}`}
-                    value={newEmail}
-                    onChange={handleNewEmailChange}
+                    value={formData.email}
+                    onChange={handleChange}
                     required
                   />
                 </div>
 
                 <div>
-                  <label className={`block text-sm font-medium mb-1 ${isDarkMode ? "text-blue-300" : "text-blue-600"}`}>Phone</label>
+                  <label className={`block text-sm font-medium mb-1 ${isDarkMode ? "text-blue-300" : "text-blue-600"}`}>
+                    Phone Number
+                  </label>
                   <input
                     name="phone"
-                    type="text"
+                    type="tel"
                     className={`w-full p-2 md:p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isDarkMode ? "border-gray-600 bg-gray-700 text-white" : "border-gray-300 text-gray-800"}`}
                     value={formData.phone}
                     onChange={handleChange}
+                    placeholder="+1 (123) 456-7890"
                   />
                 </div>
               </div>

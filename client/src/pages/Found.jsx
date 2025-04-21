@@ -47,6 +47,15 @@ export default function FoundPage() {
     );
   }, []);
 
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        navigate("/Home");
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [success, navigate]);
+
   function LocationMarker() {
     useMapEvents({
       click(e) {
@@ -156,7 +165,7 @@ export default function FoundPage() {
               <div className={`p-4 rounded-lg mb-4 text-center ${
                 isDarkMode ? "bg-green-900 text-green-200" : "bg-green-100 text-green-800"
               }`}>
-                Found item reported successfully!
+                Found item reported successfully! Redirecting to home page...
               </div>
             )}
 
@@ -204,13 +213,13 @@ export default function FoundPage() {
                   isDarkMode ? "border-gray-600" : "border-gray-300"
                 }`}>
                   {location.lat && location.lng ? (
-                    <MapContainer 
-                      center={[location.lat, location.lng]} 
-                      zoom={15} 
+                    <MapContainer
+                      center={[location.lat, location.lng]}
+                      zoom={15}
                       style={{ height: "100%", width: "100%" }}
                     >
-                      <TileLayer 
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
+                      <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                       />
                       <LocationMarker />
@@ -240,10 +249,10 @@ export default function FoundPage() {
                       Choose File
                     </span>
                     <input 
-                      type="file" 
-                      accept="image/*" 
-                      onChange={(e) => setImageFile(e.target.files[0])} 
-                      className="hidden" 
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setImageFile(e.target.files[0])}
+                      className="hidden"
                     />
                   </label>
                   {imageFile && (
