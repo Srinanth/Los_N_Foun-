@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import UserRouter from "./routes/AuthRoutes.js";
 import cors from "cors";
-import ProtectedRouter from "./routes/ProtectedRoute.js";
+// import ProtectedRouter from "./routes/ProtectedRoute.js";
 import Cloudrouter from "./routes/CloudinaryRoute.js";
 import Reportrouter from "./routes/ReportRoute.js";
 import FoundRouter from "./routes/FoundRoute.js";
@@ -18,7 +18,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", UserRouter);
-app.use("/api/protected", ProtectedRouter);
+// app.use("/api/protected", ProtectedRouter);
 app.use("/api/cloudinary", Cloudrouter);
 app.use("/api", Reportrouter); 
 app.use("/api", FoundRouter);
