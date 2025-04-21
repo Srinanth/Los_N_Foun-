@@ -40,7 +40,7 @@ export default function UpdateProfile() {
     try {
       const response = await axios.get(`https://los-n-found.onrender.com/api/profile/${id}`);
       setFormData(response.data);
-      setNewEmail(response.data.email || ""); 
+      setNewEmail(response.data.email || "");
     } catch (error) {
       console.error("Error fetching profile:", error);
       setError("Failed to load profile data");
@@ -68,7 +68,7 @@ export default function UpdateProfile() {
 
     if (imageFile) {
       const formDataImage = new FormData();
-      formData.append("image", imageFile);
+      formDataImage.append("image", imageFile);
 
       try {
         const response = await axios.post(
@@ -99,13 +99,12 @@ export default function UpdateProfile() {
       if (newEmail && newEmail !== formData.email) {
         await updateEmail(auth.currentUser, newEmail);
       }
-
       navigate("/profile");
     } catch (error) {
       console.error("Error updating profile:", error);
       setError("Failed to update profile!");
       if (error.response?.data?.error) {
-        setError(error.response.data.error); 
+        setError(error.response.data.error);
       }
     } finally {
       setLoading(false);
