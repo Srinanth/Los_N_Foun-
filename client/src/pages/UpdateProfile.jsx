@@ -69,7 +69,7 @@ export default function UpdateProfile() {
     if (imageFile) {
       const formDataImage = new FormData();
       formDataImage.append("file", imageFile);
-      formDataImage.append("upload_preset", "profile");
+      formDataImage.append("image", "profile");
 
       try {
         const response = await axios.post(

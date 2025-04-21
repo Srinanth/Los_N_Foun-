@@ -185,7 +185,7 @@ const MapComponent = () => {
             {userLocation && (
               <Marker position={userLocation} icon={DefaultIcon}>
                 <Popup className={isDarkMode ? "leaflet-popup-content-wrapper-dark" : ""}>
-                  <span className={isDarkMode ? "text-white" : "text-gray-800"}>You are here</span>
+                  <span className={isDarkMode ? "text-gray-800" : "text-gray-800"}>You are here</span>
                 </Popup>
               </Marker>
             )}
