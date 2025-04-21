@@ -5,21 +5,20 @@ import { uploadToCloudinary, deleteFromCloudinary } from "../config/CloudinaryCo
 const Cloudrouter = express.Router();
 const upload = multer();
 
-// Endpoint to upload images
+
 Cloudrouter.post("/upload", upload.single("image"), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
 
   try {
-    const result = await uploadToCloudinary(req.file.buffer); // Upload image to Cloudinary
-    res.json({ imageUrl: result.secure_url }); // Return the image URL
+    const result = await uploadToCloudinary(req.file.buffer); 
+    res.json({ imageUrl: result.secure_url }); 
   } catch (error) {
     res.status(500).json({ error: "Image upload failed" });
   }
 });
 
-// Endpoint to delete images
 Cloudrouter.delete("/delete-image", async (req, res) => {
   const { publicId } = req.body;
 

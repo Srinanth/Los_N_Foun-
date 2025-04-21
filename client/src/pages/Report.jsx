@@ -106,7 +106,7 @@ export default function ReportPage() {
       description,
       location,
       imageUrl,
-      userId: user.uid, // Include user ID
+      userId: user.uid,
     };
 
     try {
