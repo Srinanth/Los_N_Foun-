@@ -13,6 +13,7 @@ import RecentUpdates from "./pages/Recent";
 import MapComponent from "./pages/Nearby";
 import ForumPage from "./pages/Forum";
 import { Toaster } from "react-hot-toast";
+import AdminPage from './pages/AdminPage';
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/admin" element={<AdminPage />} />
         <Route path="/Home" element={<HomePage />} />
         <Route path="/profile/:userId" element={<ProfilePage />} />
         <Route path="/update" element={<UpdateProfile />} />

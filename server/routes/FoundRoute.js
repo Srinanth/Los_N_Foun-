@@ -12,7 +12,6 @@ FoundRouter.post("/found", async (req, res) => {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  // Validate required fields
   if (!category || !description || !location || !location.lat || !location.lng) {
     return res.status(400).json({ error: "Missing required fields" });
   }
@@ -22,7 +21,6 @@ FoundRouter.post("/found", async (req, res) => {
     const user = await auth.verifyIdToken(token);
     const userId = user.uid;
 
-    // Save found item data to Firestore
     const foundData = {
       userId,
       category,
