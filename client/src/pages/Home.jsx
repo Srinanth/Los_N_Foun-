@@ -97,7 +97,7 @@ useEffect(() => {
           </button>
           <button
             onClick={handleLogout}
-            className="bg-red-500 px-4 py-2 rounded-md hover:bg-red-600 transition text-white font-medium"
+            className="bg-red-500 px-6 py-2 rounded-md hover:bg-red-600 transition text-white font-medium"
           >
             Logout
           </button>
