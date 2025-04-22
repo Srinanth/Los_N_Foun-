@@ -13,7 +13,7 @@ import RecentUpdates from "./pages/Recent";
 import MapComponent from "./pages/Nearby";
 import ForumPage from "./pages/Forum";
 import { Toaster } from "react-hot-toast";
-import AdminPage from './pages/AdminPage';
+import AdminPage from './pages/Adminpage.jsx';
 
 function App() {
 
