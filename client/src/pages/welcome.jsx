@@ -9,6 +9,8 @@ import LoadingScreen from "../components/loading";
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const [showLoading, setShowLoading] = useState(false);
+  const [targetPage, setTargetPage] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const storedTheme = localStorage.getItem("darkMode");
     return storedTheme ? storedTheme === "true" : false;
