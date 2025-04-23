@@ -5,6 +5,7 @@ import GavelIcon from "@mui/icons-material/Gavel";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { useState, useEffect } from "react";
+import LoadingScreen from "../components/loading";
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -12,6 +13,16 @@ export default function LandingPage() {
     const storedTheme = localStorage.getItem("darkMode");
     return storedTheme ? storedTheme === "true" : false;
   });
+  const handleRedirect = (path) => {
+    setTargetPage(path);
+    setShowLoading(true);
+    setTimeout(() => {
+      navigate(path, { state: { target: path } });
+    }, 2000);
+  };
+
+  if (showLoading) return <LoadingScreen isDarkMode={isDarkMode} />;
+
 
   const darkClass = isDarkMode ? "dark" : "";
   const textColorClass = isDarkMode ? "text-gray-300" : "text-gray-800";
@@ -32,13 +43,13 @@ export default function LandingPage() {
         <h1 className={`text-4xl font-bold ${isDarkMode ? "text-blue-400" : "text-blue-600"}`}>ReturnIt</h1>
         <div className="flex gap-3">
           <button
-            onClick={() => navigate("/login")}
+             onClick={() => handleRedirect('/login')}
             className={buttonClass}
           >
             Login
           </button>
           <button
-            onClick={() => navigate("/signup")}
+             onClick={() => handleRedirect('/signup')}
             className={primaryButtonClass}
           >
             Sign Up
