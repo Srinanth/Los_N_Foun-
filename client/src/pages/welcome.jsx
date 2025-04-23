@@ -30,7 +30,7 @@ export default function LandingPage() {
   return (
     <div className={`${darkClass} flex flex-col min-h-screen ${bgColorClass} ${textColorClass}`}>
       <nav className={`flex justify-between items-center p-6 ${navBgClass}`}>
-      <div className="flex items-center space-x-1">
+      <div className="flex items-center space-x-0.5">
         <img src={ReturnIt} alt="R" className="h-10 w-10" />
         <h1 className={`text-4xl font-bold ${isDarkMode ? "text-blue-400" : "text-blue-600"}`}>
           eturnIt
