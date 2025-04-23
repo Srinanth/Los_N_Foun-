@@ -11,153 +11,137 @@ export default function AdminPage() {
   const [hovered, setHovered] = useState(null);
   const [reportedItems, setReportedItems] = useState([
     {
-    id: "1",
-    category: "Wallet",
-    description: "Black leather wallet with two credit cards, driver's license, and college ID. Slight scratch on the front corner.",
-    imageUrl: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=500",
-    location: "Main Campus - Building A",
-    status: "Lost"
-  },
-  {
-    id: "2",
-    category: "Laptop",
-    description: "13-inch MacBook Pro in a silver case with a 'Code Like a Pro' sticker on the back. Slight dent on the top left corner.",
-    imageUrl: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500",
-    location: "Library - 2nd Floor",
-    status: "Lost"
-  },
-  {
-    id: "3",
-    category: "Keys",
-    description: "Bunch of 5 metal keys on a ring with a blue plastic tag labeled 'B-Block 23'.",
-    imageUrl: "https://images.unsplash.com/photo-1577563908411-5077dda5ee48?w=500",
-    location: "Cafeteria",
-    status: "Lost"
-  },
-  {
-    id: "4",
-    category: "Phone",
-    description: "iPhone 12 with a matte black case. The lock screen has a dog wallpaper. May have low battery.",
-    imageUrl: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=500",
-    location: "Sports Complex",
-    status: "Lost"
-  },
-  {
-    id: "9",
-    category: "Watch",
-    description: "Black Fossil smartwatch with a leather strap and a cracked screen protector.",
-    imageUrl: "https://images.unsplash.com/photo-1519241047957-be31d7379a5d?w=500",
-    location: "Men's Restroom - Admin Block",
-    status: "Lost"
-  },
-  {
-    id: "10",
-    category: "ID Card",
-    description: "College ID card with name 'Aarav Nair', RIT Kottayam, CS Dept, red lanyard.",
-    imageUrl: "https://images.unsplash.com/photo-1588776814546-b43d3e5f9bfa?w=500",
-    location: "Auditorium Lobby",
-    status: "Lost"
-  },
-  {
-    id: "11",
-    category: "Headphones",
-    description: "Black wireless Sony headphones in a soft case with minor scratches on the left ear cup.",
-    imageUrl: "https://images.unsplash.com/photo-1612222932634-cdfe3e2bfb55?w=500",
-    location: "Music Room",
-    status: "Lost"
-  },
-  {
-    id: "12",
-    category: "Calculator",
-    description: "Casio FX-991ES PLUS scientific calculator with name written on the back in black ink.",
-    imageUrl: "https://images.unsplash.com/photo-1632804761066-bfa2e1c4d9a7?w=500",
-    location: "Exam Hall 2",
-    status: "Lost"
-  },
-  {
-    id: "13",
-    category: "Purse",
-    description: "Brown purse with a zip compartment containing coins, small mirror, and lipstick.",
-    imageUrl: "https://images.unsplash.com/photo-1587300003389-cacb7db64fb2?w=500",
-    location: "Canteen",
-    status: "Lost"
-  }
-]);
+      id: "1",
+      category: "Wallet",
+      description: "Black leather wallet with two credit cards, driver's license, and college ID. Slight scratch on the front corner.",
+      imageUrl: "https://images.unsplash.com/photo-1613243555978-636c48dc653c?w=500&auto=format&fit=crop",
+      location: "Main Campus - Building A",
+      status: "Lost"
+    },
+    {
+      id: "2",
+      category: "Laptop",
+      description: "13-inch MacBook Pro in a silver case with a 'Code Like a Pro' sticker on the back. Slight dent on the top left corner.",
+      imageUrl: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=500&auto=format&fit=crop",
+      location: "Library - 2nd Floor",
+      status: "Lost"
+    },
+    {
+      id: "3",
+      category: "Keys",
+      description: "Bunch of 5 metal keys on a ring with a blue plastic tag labeled 'B-Block 23'.",
+      imageUrl: "https://images.unsplash.com/photo-1604671805440-3e1b1d277b7c?w=500&auto=format&fit=crop",
+      location: "Cafeteria",
+      status: "Lost"
+    },
+    {
+      id: "4",
+      category: "Phone",
+      description: "iPhone 12 with a matte black case. The lock screen has a dog wallpaper. May have low battery.",
+      imageUrl: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=500&auto=format&fit=crop",
+      location: "Sports Complex",
+      status: "Lost"
+    },
+    {
+      id: "9",
+      category: "Watch",
+      description: "Black Fossil smartwatch with a leather strap and a cracked screen protector.",
+      imageUrl: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=500&auto=format&fit=crop",
+      location: "Men's Restroom - Admin Block",
+      status: "Lost"
+    },
+    {
+      id: "10",
+      category: "ID Card",
+      description: "College ID card with name 'Aarav Nair', RIT Kottayam, CS Dept, red lanyard.",
+      imageUrl: "https://images.unsplash.com/photo-1516557070061-c3d1653fa646?w=500&auto=format&fit=crop",
+      location: "Auditorium Lobby",
+      status: "Lost"
+    },
+    {
+      id: "11",
+      category: "Headphones",
+      description: "Black wireless Sony headphones in a soft case with minor scratches on the left ear cup.",
+      imageUrl: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop",
+      location: "Music Room",
+      status: "Lost"
+    },
+    {
+      id: "12",
+      category: "Calculator",
+      description: "Casio FX-991ES PLUS scientific calculator with name written on the back in black ink.",
+      imageUrl: "https://images.unsplash.com/photo-1587145820266-a5951ee6f620?w=500&auto=format&fit=crop",
+      location: "Exam Hall 2",
+      status: "Lost"
+    }
+  ]);
 
   const [foundItems, setFoundItems] = useState([
-   {
-    id: "5",
-    category: "Backpack",
-    description: "Blue Jansport backpack containing 3 textbooks, a pencil pouch, and a laptop charger.",
-    imageUrl: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500",
-    location: "Lecture Hall B",
-    status: "Found"
-  },
-  {
-    id: "6",
-    category: "Glasses",
-    description: "Black rectangular prescription glasses inside a brown leather case with initials 'RK'.",
-    imageUrl: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500",
-    location: "Computer Lab",
-    status: "Found"
-  },
-  {
-    id: "7",
-    category: "Notebook",
-    description: "Spiral-bound notebook with 'Organic Chemistry' written on the first page. Green plastic cover.",
-    imageUrl: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500",
-    location: "Chemistry Department",
-    status: "Found"
-  },
-  {
-    id: "8",
-    category: "Water Bottle",
-    description: "Silver stainless steel bottle with several cartoon character stickers. Slightly dented at the bottom.",
-    imageUrl: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500",
-    location: "Gym",
-    status: "Found"
-  },
-  {
-    id: "14",
-    category: "Earphones",
-    description: "White Apple earphones found tangled on a bench. Minor dirt on wires.",
-    imageUrl: "https://images.unsplash.com/photo-1614945302409-90a9a0553d90?w=500",
-    location: "Bus Stop",
-    status: "Found"
-  },
-  {
-    id: "15",
-    category: "Cap",
-    description: "Black Nike cap with white logo, slightly faded. Found on a stair railing.",
-    imageUrl: "https://images.unsplash.com/photo-1609838468121-54905f88d4f3?w=500",
-    location: "Stadium Entrance",
-    status: "Found"
-  },
-  {
-    id: "16",
-    category: "Umbrella",
-    description: "Blue foldable umbrella with a wooden handle. Wet and placed on a bench near the entrance.",
-    imageUrl: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=500",
-    location: "Library Gate",
-    status: "Found"
-  },
-  {
-    id: "17",
-    category: "Power Bank",
-    description: "Red Mi power bank with 20000mAh capacity. Found unplugged near a charging station.",
-    imageUrl: "https://images.unsplash.com/photo-1587825140708-71262b2c9d96?w=500",
-    location: "Student Lounge",
-    status: "Found"
-  },
-  {
-    id: "18",
-    category: "File Folder",
-    description: "Transparent A4-sized folder containing printed notes and a resume titled 'Job Application'.",
-    imageUrl: "https://images.unsplash.com/photo-1529473814998-077b4fec6770?w=500",
-    location: "Placement Cell",
-    status: "Found"
-  }
-]);
+    {
+      id: "5",
+      category: "Backpack",
+      description: "Blue Jansport backpack containing 3 textbooks, a pencil pouch, and a laptop charger.",
+      imageUrl: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&auto=format&fit=crop",
+      location: "Lecture Hall B",
+      status: "Found"
+    },
+    {
+      id: "6",
+      category: "Glasses",
+      description: "Black rectangular prescription glasses inside a brown leather case with initials 'RK'.",
+      imageUrl: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&auto=format&fit=crop",
+      location: "Computer Lab",
+      status: "Found"
+    },
+    {
+      id: "7",
+      category: "Notebook",
+      description: "Spiral-bound notebook with 'Organic Chemistry' written on the first page. Green plastic cover.",
+      imageUrl: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500&auto=format&fit=crop",
+      location: "Chemistry Department",
+      status: "Found"
+    },
+    {
+      id: "8",
+      category: "Water Bottle",
+      description: "Silver stainless steel bottle with several cartoon character stickers. Slightly dented at the bottom.",
+      imageUrl: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500&auto=format&fit=crop",
+      location: "Gym",
+      status: "Found"
+    },
+    {
+      id: "14",
+      category: "Earphones",
+      description: "White Apple earphones found tangled on a bench. Minor dirt on wires.",
+      imageUrl: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&auto=format&fit=crop",
+      location: "Bus Stop",
+      status: "Found"
+    },
+    {
+      id: "15",
+      category: "Cap",
+      description: "Black Nike cap with white logo, slightly faded. Found on a stair railing.",
+      imageUrl: "https://images.unsplash.com/photo-1575428652377-a2d80e2277fc?w=500&auto=format&fit=crop",
+      location: "Stadium Entrance",
+      status: "Found"
+    },
+    {
+      id: "16",
+      category: "Umbrella",
+      description: "Blue foldable umbrella with a wooden handle. Wet and placed on a bench near the entrance.",
+      imageUrl: "https://images.unsplash.com/photo-1534957753291-64d667ce2927?w=500&auto=format&fit=crop",
+      location: "Library Gate",
+      status: "Found"
+    },
+    {
+      id: "17",
+      category: "Power Bank",
+      description: "Red Mi power bank with 20000mAh capacity. Found unplugged near a charging station.",
+      imageUrl: "https://images.unsplash.com/photo-1587825140708-df0f42c9efd0?w=500&auto=format&fit=crop",
+      location: "Student Lounge",
+      status: "Found"
+    }
+  ]);
 
   const [users] = useState([
     {
