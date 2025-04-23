@@ -1,9 +1,11 @@
 import { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, X, Moon, Sun, Trash2 } from "lucide-react";
+import { getAuth } from "firebase/auth";
 
 export default function AdminPage() {
   const navigate = useNavigate();
+  const auth = getAuth(app);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [hovered, setHovered] = useState(null);
   const [reportedItems, setReportedItems] = useState([
