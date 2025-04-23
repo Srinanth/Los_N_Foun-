@@ -210,7 +210,7 @@ const RecentUpdates = () => {
                               <img
                                 src={match.foundItem.imageUrl}
                                 alt="Found item"
-                                className="h-24 w-full object-cover rounded-md border border-gray-200"
+                                className="h-full w-full object-cover rounded-md border border-gray-200"
                               />
                             </div>
                           )}
