@@ -49,7 +49,7 @@ MailRouter.post("/send-email", async (req, res) => {
 
               Best regards,
               Lost & Found Support Team
-              [Your Company Name]`,
+              ReturnIt`,
     };
 
     // Send the email
