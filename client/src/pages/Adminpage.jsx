@@ -14,7 +14,7 @@ export default function AdminPage() {
       id: "1",
       category: "Wallet",
       description: "Black leather wallet with two credit cards, driver's license, and college ID. Slight scratch on the front corner.",
-      imageUrl: "https://images.unsplash.com/photo-1613243555978-636c48dc653c?w=500&auto=format&fit=crop",
+      imageUrl: "https://media.istockphoto.com/id/180756294/photo/wallet.jpg?s=2048x2048&w=is&k=20&c=LsLYeSiy8Kk8XGXCmWBD-vukSQWJMNVbhIyVghEEXxM=&auto=format&fit=crop",
       location: "Main Campus - Building A",
       status: "Lost"
     },
@@ -30,7 +30,7 @@ export default function AdminPage() {
       id: "3",
       category: "Keys",
       description: "Bunch of 5 metal keys on a ring with a blue plastic tag labeled 'B-Block 23'.",
-      imageUrl: "https://images.unsplash.com/photo-1603724984387-5875bdf2e720?w=500&auto=format&fit=crop",
+      imageUrl: "https://images.pexels.com/photos/842528/pexels-photo-842528.jpeg?w=500&auto=format&fit=crop",
       location: "Cafeteria",
       status: "Lost"
     },
@@ -38,7 +38,7 @@ export default function AdminPage() {
       id: "4",
       category: "Phone",
       description: "iPhone 12 with a matte black case. The lock screen has a dog wallpaper. May have low battery.",
-      imageUrl: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=500&auto=format&fit=crop",
+      imageUrl: "https://media.istockphoto.com/id/1197063359/photo/woman-using-apple-iphone-11-pro-smartphone.jpg?s=2048x2048&w=is&k=20&c=Q8nQ4II_VJlaukvKvCl4kix6LUGczuFTQAmr9jEOs6s=&auto=format&fit=crop",
       location: "Sports Complex",
       status: "Lost"
     },
@@ -137,7 +137,7 @@ export default function AdminPage() {
       id: "17",
       category: "Power Bank",
       description: "Red Mi power bank with 20000mAh capacity. Found unplugged near a charging station.",
-      imageUrl: "https://images.unsplash.com/photo-1584277261303-f3b41b53e381?w=500&auto=format&fit=crop",
+      imageUrl: "https://media.istockphoto.com/id/1159079715/photo/blue-external-battery.jpg?s=2048x2048&w=is&k=20&c=igmq2ibBU-isQPN732s1IuOjQ5MX8lW4N8zD4HLy_9g=&auto=format&fit=crop",
       location: "Student Lounge",
       status: "Found"
     }
