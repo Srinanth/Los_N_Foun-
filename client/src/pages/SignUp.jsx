@@ -34,9 +34,11 @@ const SignUp = () => {
       const user = userCredential.user;
       await updateProfile(user, { displayName: username });
 
+      const idToken = await user.getIdToken();
+
       const res = await fetch("https://los-n-found.onrender.com/api/auth/signup", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${idToken}`, },
         body: JSON.stringify({ uid: user.uid, username, email }),
       });
 
