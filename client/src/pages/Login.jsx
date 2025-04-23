@@ -20,7 +20,8 @@ export default function LoginPage() {
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        navigate("/Home");
+        
+        navigate(user.email.toLowerCase() === "admin@returnit.com" ? "/admin" : "/Home");
       }
     });
 
@@ -35,7 +36,7 @@ export default function LoginPage() {
       const token = await userCredential.user.getIdToken();
       localStorage.setItem("token", token);
       toast.success('Login successful!');
-      navigate("/Home"); 
+      navigate(userCredential.user.email.toLowerCase() === "admin@returnit.com" ? "/admin" : "/Home");
     } catch (error) {
       toast.error("Invalid email or password");
     }
@@ -47,12 +48,11 @@ export default function LoginPage() {
       const token = await userCredential.user.getIdToken();
       localStorage.setItem("token", token);
       toast.success('Logged in with Google!');
-      navigate("/Home");
+      navigate(userCredential.user.email.toLowerCase() === "admin@returnit.com" ? "/admin" : "/Home");
     } catch (error) {
       toast.error("Failed to login with Google");
     }
   };
-
   return (
     <div className={`flex items-center justify-center min-h-screen ${isDarkMode ? "bg-gray-900" : "bg-gradient-to-b from-blue-50 to-white"} p-4 transition-colors duration-500`}>
       <Toaster position="top-center" />
