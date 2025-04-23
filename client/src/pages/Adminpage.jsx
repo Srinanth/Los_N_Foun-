@@ -2,6 +2,7 @@ import { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, X, Moon, Sun, Trash2 } from "lucide-react";
 import { getAuth } from "firebase/auth";
+import { app } from "../firebaseConfig";
 
 export default function AdminPage() {
   const navigate = useNavigate();
