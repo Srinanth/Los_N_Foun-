@@ -10,16 +10,17 @@ import LoadingScreen from "../components/loading";
 export default function LandingPage() {
   const navigate = useNavigate();
   const [showLoading, setShowLoading] = useState(false);
-  const [targetPage, setTargetPage] = useState('');
+  const [redirectPath, setRedirectPath] = useState(null);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const storedTheme = localStorage.getItem("darkMode");
     return storedTheme ? storedTheme === "true" : false;
   });
   const handleRedirect = (path) => {
-    setTargetPage(path);
+    setRedirectPath(path);
     setShowLoading(true);
+
     setTimeout(() => {
-      navigate(path, { state: { target: path } });
+      navigate(path);
     }, 2000);
   };
 
