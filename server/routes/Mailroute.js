@@ -28,7 +28,7 @@ MailRouter.post("/send-email", async (req, res) => {
     const mailOptions = {
       from: senderEmail, 
       to: ownerEmail, 
-      subject: `Lost & Found: Inquiry about "${title}"`,
+      subject: `Lost & Found: Inquiry about Reported Item`,
       text: `Dear User,
 
 👋 We hope this message finds you well.
