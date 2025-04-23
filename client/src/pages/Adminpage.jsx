@@ -210,6 +210,7 @@ export default function AdminPage() {
   };
 
   const handleLogout = () => {
+    auth.signOut();
     navigate("/login");
   };
 
