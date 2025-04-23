@@ -1,6 +1,6 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Menu, X, Moon, Sun, Trash2 } from "lucide-react";
+import { Menu, X, Moon, Sun, Trash2, MoreVertical, Edit } from "lucide-react";
 import { getAuth } from "firebase/auth";
 import { app } from "../firebaseConfig";
 
@@ -121,7 +121,7 @@ export default function AdminPage() {
       id: "16",
       category: "Umbrella",
       description: "Blue foldable umbrella with a wooden handle. Wet and placed on a bench near the entrance.",
-      imageUrl: "https://images.unsplash.com/photo-1534957753291-64d667ce2927?w=500&auto=format&fit=crop",
+      imageUrl: "https://media.istockphoto.com/id/866721702/photo/blue-umbrella.jpg?s=2048x2048&w=is&k=20&c=YWt75t-vdqUoAXyRVnE6l5mVEpQ1UfSZlsnyOzEEDNs=&auto=format&fit=crop",
       location: "Library Gate",
       status: "Found"
     },
@@ -135,7 +135,7 @@ export default function AdminPage() {
     }
   ]);
 
-  const [users] = useState([
+  const [users, setUsers] = useState([
     {
       id: "u1",
       username: "Kevin Jose",
@@ -178,6 +178,8 @@ export default function AdminPage() {
     return storedTheme ? storedTheme === "true" : false;
   });
 
+  const [activeMenu, setActiveMenu] = useState(null);
+
   useEffect(() => {
     localStorage.setItem("darkMode", isDarkMode);
   }, [isDarkMode]);
@@ -188,9 +190,20 @@ export default function AdminPage() {
     alert("Item deleted successfully");
   };
 
+  const handleDeleteUser = (userId) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    setUsers(prev => prev.filter(user => user.id !== userId));
+    setActiveMenu(null);
+    alert("User deleted successfully");
+  };
+
   const handleLogout = () => {
     auth.signOut();
     navigate("/login");
+  };
+
+  const toggleMenu = (userId) => {
+    setActiveMenu(activeMenu === userId ? null : userId);
   };
 
   return (
@@ -352,6 +365,9 @@ export default function AdminPage() {
                     <th scope="col" className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${isDarkMode ? "text-gray-300" : "text-gray-500"}`}>
                       User ID
                     </th>
+                    <th scope="col" className={`px-6 py-3 text-right text-xs font-medium uppercase tracking-wider ${isDarkMode ? "text-gray-300" : "text-gray-500"}`}>
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className={`divide-y ${isDarkMode ? "divide-gray-700 bg-gray-800" : "divide-gray-200 bg-white"}`}>
@@ -365,6 +381,32 @@ export default function AdminPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap font-mono text-xs">
                         {user.id}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium relative">
+                        <button 
+                          onClick={() => toggleMenu(user.id)}
+                          className={`p-1 rounded-full ${isDarkMode ? "hover:bg-gray-600" : "hover:bg-gray-200"}`}
+                        >
+                          <MoreVertical size={16} />
+                        </button>
+                        
+                        {activeMenu === user.id && (
+                          <div className={`absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md shadow-lg ${isDarkMode ? "bg-gray-700" : "bg-white"} ring-1 ring-black ring-opacity-5 focus:outline-none`}>
+                            <div className="py-1">
+                              <button
+                                className={`flex items-center w-full px-4 py-2 text-sm ${isDarkMode ? "text-gray-300 hover:bg-gray-600" : "text-gray-700 hover:bg-gray-100"}`}
+                              >
+                                <Edit size={14} className="mr-2" /> Edit
+                              </button>
+                              <button
+                                onClick={() => handleDeleteUser(user.id)}
+                                className={`flex items-center w-full px-4 py-2 text-sm ${isDarkMode ? "text-red-400 hover:bg-gray-600" : "text-red-600 hover:bg-gray-100"}`}
+                              >
+                                <Trash2 size={14} className="mr-2" /> Delete
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))}
