@@ -29,7 +29,7 @@ export default function LandingPage() {
   return (
     <div className={`${darkClass} flex flex-col min-h-screen ${bgColorClass} ${textColorClass}`}>
       <nav className={`flex justify-between items-center p-6 ${navBgClass}`}>
-        <h1 className={`text-2xl font-bold ${isDarkMode ? "text-blue-400" : "text-blue-600"}`}>ReturnIt</h1>
+        <h1 className={`text-4xl font-bold ${isDarkMode ? "text-blue-400" : "text-blue-600"}`}>ReturnIt</h1>
         <div className="flex gap-3">
           <button
             onClick={() => navigate("/login")}
