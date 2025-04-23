@@ -51,14 +51,6 @@ export default function AdminPage() {
       status: "Lost"
     },
     {
-      id: "10",
-      category: "ID Card",
-      description: "College ID card with name 'Aarav Nair', RIT Kottayam, CS Dept, red lanyard.",
-      imageUrl: "https://images.unsplash.com/photo-1516557070061-c3d1653fa646?w=500&auto=format&fit=crop",
-      location: "Auditorium Lobby",
-      status: "Lost"
-    },
-    {
       id: "11",
       category: "Headphones",
       description: "Black wireless Sony headphones in a soft case with minor scratches on the left ear cup.",
