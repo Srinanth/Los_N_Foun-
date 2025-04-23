@@ -30,7 +30,7 @@ export default function AdminPage() {
       id: "3",
       category: "Keys",
       description: "Bunch of 5 metal keys on a ring with a blue plastic tag labeled 'B-Block 23'.",
-      imageUrl: "https://images.unsplash.com/photo-1604671805440-3e1b1d277b7c?w=500&auto=format&fit=crop",
+      imageUrl: "https://images.unsplash.com/photo-1603724984387-5875bdf2e720?w=500&auto=format&fit=crop",
       location: "Cafeteria",
       status: "Lost"
     },
@@ -137,7 +137,7 @@ export default function AdminPage() {
       id: "17",
       category: "Power Bank",
       description: "Red Mi power bank with 20000mAh capacity. Found unplugged near a charging station.",
-      imageUrl: "https://images.unsplash.com/photo-1587825140708-df0f42c9efd0?w=500&auto=format&fit=crop",
+      imageUrl: "https://images.unsplash.com/photo-1584277261303-f3b41b53e381?w=500&auto=format&fit=crop",
       location: "Student Lounge",
       status: "Found"
     }
