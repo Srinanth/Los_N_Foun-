@@ -29,7 +29,27 @@ MailRouter.post("/send-email", async (req, res) => {
       from: senderEmail, 
       to: ownerEmail, 
       subject: `Lost & Found: Inquiry about "${title}"`,
-      text: `Hello, I'm interested in your item:\n\n${itemDetails}\n\nPlease reply to: ${senderEmail}.`,
+      text: `Dear User,
+
+              We hope this message finds you well.
+
+              We are reaching out regarding a report submitted to our Lost & Found system about an item that may match something you’ve reported as missing.
+
+              Item Details:
+              ${itemDetails}
+
+              If this item seems to be yours, we kindly ask you to get in touch with the person who found it to confirm ownership and arrange for its return.
+
+              Please reply directly to the following email address to proceed:
+              ${senderEmail}
+
+              In your response, please include any relevant identifying details that can help verify the item belongs to you (e.g., serial number, custom stickers, or other unique characteristics).
+
+              Thank you for using our Lost & Found service.
+
+              Best regards,
+              Lost & Found Support Team
+              [Your Company Name]`,
     };
 
     // Send the email
