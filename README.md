@@ -1,7 +1,7 @@
 # 🔍 Lost & Found Platform  
 
 A **smart AI-powered lost and found platform** that helps users report, search, and match lost and found items based on **location and description**.
-
+**Built as part of the IPR Project for Semester 2** – This project showcases the integration of AI and modern web technologies to solve real-world problems.
 ## 🚀 Features  
 
 ✅ **Report Lost & Found Items** – Users can report lost or found items with details like category, description, location, and optional images.  
